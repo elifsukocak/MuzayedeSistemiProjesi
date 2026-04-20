@@ -12,3 +12,5 @@ db.sqlite3
 # IDE dosyaları
 .vscode/
 .idea/
+.DS_Store
+**/.DS_Store
