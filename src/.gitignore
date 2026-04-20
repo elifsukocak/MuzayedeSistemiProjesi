@@ -1,6 +1,6 @@
 # Python cache
-#__pycache__/
-#*.pyc
+__pycache__/
+*.pyc
 
 # Virtual environment (varsa)
 venv/
@@ -11,4 +11,4 @@ db.sqlite3
 
 # IDE dosyaları
 .vscode/
-#.idea/
+.idea/
