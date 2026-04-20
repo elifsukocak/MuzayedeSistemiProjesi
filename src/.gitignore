@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment (varsa)
+venv/
+env/
+
+# Django
+db.sqlite3
+
+# IDE dosyaları
+.vscode/
+.idea/
