@@ -1,15 +1,15 @@
 from django.contrib import admin
-from .models import Category, Product
+from .models import Kategori, Urun
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent')
-    search_fields = ('name',)
-    list_filter = ('parent',)
+@admin.register(Kategori)
+class KategoriAdmin(admin.ModelAdmin):
+    list_display = ('ad', 'ust_kategori')
+    search_fields = ('ad',)
+    list_filter = ('ust_kategori',)
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    # 'status' yerine renkli fonksiyonu buraya ekledik:
-    list_display = ('name', 'category', 'seller', 'get_status_display_color', 'starting_price', 'current_price', 'end_time')
-    list_filter = ('status', 'category')
-    search_fields = ('name', 'description')
+@admin.register(Urun)
+class UrunAdmin(admin.ModelAdmin):
+    # Tasarım raporuna göre güncellenen alanlar ve renkli durum fonksiyonu
+    list_display = ('ad', 'kategori', 'satici', 'get_durum_renk', 'baslangicFiyati')
+    list_filter = ('durum', 'kategori')
+    search_fields = ('ad', 'aciklama')

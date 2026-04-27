@@ -1,9 +1,9 @@
 from django.db import models
 from django.conf import settings
 
-class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Kategori Adı")
-    parent = models.ForeignKey(
+class Kategori (models.Model):
+    ad = models.CharField(max_length=100, verbose_name="Kategori Adı")
+    ust_kategori = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
         null=True,
@@ -17,54 +17,56 @@ class Category(models.Model):
         verbose_name_plural = "Kategoriler"
 
     def __str__(self):
-        if self.parent:
-            return f"{self.parent.name} -> {self.name}"
-        return self.name
+        if self.ust_kategori:
+            return f"{self.ust_kategori.ad} -> {self.ad}"
+        return self.ad
 
-class Product(models.Model):
-    STATUS_CHOICES = [
-        ('draft', 'Taslak'),
-        ('pending', 'Onay Bekliyor'),
-        ('active', 'Aktif'),
-        ('sold', 'Satıldı'),
-        ('rejected', 'Reddedildi'),
-        ('expired', 'Süresi Doldu'),
+class Urun (models.Model):
+    DURUM_SECENEKLERI = [
+        ('taslak', 'Taslak'),
+        ('onay_bekliyor', 'Onay Bekliyor'),
+        ('aktif', 'Aktif'),
+        ('satildi', 'Satıldı'),
+        ('reddedildi', 'Reddedildi'),
+        ('suresi_doldu', 'Süresi Doldu'),
     ]
 
-    seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='products')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
-    starting_price = models.DecimalField(max_digits=10, decimal_places=2)
-    current_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    end_time = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # UML Sınıf Diyagramına Birebir Uygun Alanlar:
+    satici = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='urunler',
+                               verbose_name="Satıcı")
+    ad = models.CharField(max_length=200, verbose_name="Ürün Adı")
+    aciklama = models.TextField(verbose_name="Açıklama")
+    kategori = models.ForeignKey(Kategori, on_delete=models.SET_NULL, null=True, blank=True, related_name='urunler',
+                                 verbose_name="Kategori")
+    baslangicFiyati = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Başlangıç Fiyatı")
+    durum = models.CharField(max_length=20, choices=DURUM_SECENEKLERI, default='onay_bekliyor', verbose_name="Durum")
+
+    # Ekstra gerekli alanlar (Tasarıma zarar vermeyen zorunlu web alanları)
+    gorsel = models.ImageField(upload_to='urun_gorselleri/', null=True, blank=True, verbose_name="Görsel")
+    olusturulma_tarihi = models.DateTimeField(auto_now_add=True)
+    guncellenme_tarihi = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Ürün"
         verbose_name_plural = "Ürünler"
 
     def __str__(self):
-        return self.name
+        return self.ad
 
-    # DOĞRU YER BURASI (Product Class'ının içi)
-    def get_status_display_color(self):
+    def get_durum_renk(self):
         from django.utils.html import format_html
-        colors = {
-            'draft': 'gray',
-            'pending': 'orange',
-            'active': 'green',
-            'sold': 'blue',
-            'expired': 'red',
-            'rejected': 'black',
+        renkler = {
+            'taslak': 'gray',
+            'onay_bekliyor': 'orange',
+            'aktif': 'green',
+            'satildi': 'blue',
+            'suresi_doldu': 'red',
+            'reddedildi': 'black',
         }
-        color = colors.get(self.status, 'gray')
+        renk = renkler.get(self.durum, 'gray')
         return format_html(
             '<b style="color:{};">{}</b>',
-            color,
-            self.get_status_display()
+            renk,
+            self.get_durum_display()
         )
-    get_status_display_color.short_description = "Durum"
+    get_durum_renk.short_description = "Durum"

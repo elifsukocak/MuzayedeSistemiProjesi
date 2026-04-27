@@ -1,194 +1,194 @@
 [
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 1,
   "fields": {
-    "name": "Teknoloji & Elektronik",
-    "parent": null
+    "ad": "Teknoloji & Elektronik",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 2,
   "fields": {
-    "name": "Antika",
-    "parent": null
+    "ad": "Antika",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 3,
   "fields": {
-    "name": "Eski Paralar",
-    "parent": 2
+    "ad": "Eski Paralar",
+    "ust_kategori": 2
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 4,
   "fields": {
-    "name": "Plak & Pikap",
-    "parent": 2
+    "ad": "Plak & Pikap",
+    "ust_kategori": 2
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 5,
   "fields": {
-    "name": "Tesbih",
-    "parent": 2
+    "ad": "Tesbih",
+    "ust_kategori": 2
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 6,
   "fields": {
-    "name": "Bilgisayar & Laptop",
-    "parent": 1
+    "ad": "Bilgisayar & Laptop",
+    "ust_kategori": 1
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 7,
   "fields": {
-    "name": "Retro Konsollar",
-    "parent": 1
+    "ad": "Retro Konsollar",
+    "ust_kategori": 1
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 8,
   "fields": {
-    "name": "Sanat",
-    "parent": null
+    "ad": "Sanat",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 9,
   "fields": {
-    "name": "Yağlı Boya Tablolar",
-    "parent": 8
+    "ad": "Yağlı Boya Tablolar",
+    "ust_kategori": 8
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 10,
   "fields": {
-    "name": "El Yapımı Heykeller",
-    "parent": 8
+    "ad": "El Yapımı Heykeller",
+    "ust_kategori": 8
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 11,
   "fields": {
-    "name": "Vasıta",
-    "parent": null
+    "ad": "Vasıta",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 12,
   "fields": {
-    "name": "Klasik Arabalar",
-    "parent": 11
+    "ad": "Klasik Arabalar",
+    "ust_kategori": 11
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 13,
   "fields": {
-    "name": "Motosiklet",
-    "parent": 11
+    "ad": "Motosiklet",
+    "ust_kategori": 11
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 14,
   "fields": {
-    "name": "Kitap & El Yazması",
-    "parent": null
+    "ad": "Kitap & El Yazması",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 15,
   "fields": {
-    "name": "Osmanlıca Eserler",
-    "parent": 14
+    "ad": "Osmanlıca Eserler",
+    "ust_kategori": 14
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 16,
   "fields": {
-    "name": "İmzalı Birinci Baskılar",
-    "parent": 14
+    "ad": "İmzalı Birinci Baskılar",
+    "ust_kategori": 14
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 17,
   "fields": {
-    "name": "Eski Haritalar",
-    "parent": 14
+    "ad": "Eski Haritalar",
+    "ust_kategori": 14
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 18,
   "fields": {
-    "name": "Ev & Dekorasyon",
-    "parent": null
+    "ad": "Ev & Dekorasyon",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 19,
   "fields": {
-    "name": "Porselen & Seramik",
-    "parent": 18
+    "ad": "Porselen & Seramik",
+    "ust_kategori": 18
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 20,
   "fields": {
-    "name": "Aydınlatma & Avize",
-    "parent": 18
+    "ad": "Aydınlatma & Avize",
+    "ust_kategori": 18
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 21,
   "fields": {
-    "name": "Dokuma Halı & Kilim",
-    "parent": 18
+    "ad": "Dokuma Halı & Kilim",
+    "ust_kategori": 18
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 22,
   "fields": {
-    "name": "Saat & Aksesuar",
-    "parent": null
+    "ad": "Saat & Aksesuar",
+    "ust_kategori": null
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 23,
   "fields": {
-    "name": "Köstekli Saatler",
-    "parent": 22
+    "ad": "Köstekli Saatler",
+    "ust_kategori": 22
   }
 },
 {
-  "model": "products.category",
+  "model": "products.kategori",
   "pk": 24,
   "fields": {
-    "name": "Gümüş Takılar",
-    "parent": 22
+    "ad": "Gümüş Takılar",
+    "ust_kategori": 22
   }
 }
 ]
