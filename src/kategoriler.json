@@ -1,0 +1,194 @@
+[
+{
+  "model": "products.category",
+  "pk": 1,
+  "fields": {
+    "name": "Teknoloji & Elektronik",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Antika",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 3,
+  "fields": {
+    "name": "Eski Paralar",
+    "parent": 2
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Plak & Pikap",
+    "parent": 2
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Tesbih",
+    "parent": 2
+  }
+},
+{
+  "model": "products.category",
+  "pk": 6,
+  "fields": {
+    "name": "Bilgisayar & Laptop",
+    "parent": 1
+  }
+},
+{
+  "model": "products.category",
+  "pk": 7,
+  "fields": {
+    "name": "Retro Konsollar",
+    "parent": 1
+  }
+},
+{
+  "model": "products.category",
+  "pk": 8,
+  "fields": {
+    "name": "Sanat",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 9,
+  "fields": {
+    "name": "Yağlı Boya Tablolar",
+    "parent": 8
+  }
+},
+{
+  "model": "products.category",
+  "pk": 10,
+  "fields": {
+    "name": "El Yapımı Heykeller",
+    "parent": 8
+  }
+},
+{
+  "model": "products.category",
+  "pk": 11,
+  "fields": {
+    "name": "Vasıta",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 12,
+  "fields": {
+    "name": "Klasik Arabalar",
+    "parent": 11
+  }
+},
+{
+  "model": "products.category",
+  "pk": 13,
+  "fields": {
+    "name": "Motosiklet",
+    "parent": 11
+  }
+},
+{
+  "model": "products.category",
+  "pk": 14,
+  "fields": {
+    "name": "Kitap & El Yazması",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 15,
+  "fields": {
+    "name": "Osmanlıca Eserler",
+    "parent": 14
+  }
+},
+{
+  "model": "products.category",
+  "pk": 16,
+  "fields": {
+    "name": "İmzalı Birinci Baskılar",
+    "parent": 14
+  }
+},
+{
+  "model": "products.category",
+  "pk": 17,
+  "fields": {
+    "name": "Eski Haritalar",
+    "parent": 14
+  }
+},
+{
+  "model": "products.category",
+  "pk": 18,
+  "fields": {
+    "name": "Ev & Dekorasyon",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 19,
+  "fields": {
+    "name": "Porselen & Seramik",
+    "parent": 18
+  }
+},
+{
+  "model": "products.category",
+  "pk": 20,
+  "fields": {
+    "name": "Aydınlatma & Avize",
+    "parent": 18
+  }
+},
+{
+  "model": "products.category",
+  "pk": 21,
+  "fields": {
+    "name": "Dokuma Halı & Kilim",
+    "parent": 18
+  }
+},
+{
+  "model": "products.category",
+  "pk": 22,
+  "fields": {
+    "name": "Saat & Aksesuar",
+    "parent": null
+  }
+},
+{
+  "model": "products.category",
+  "pk": 23,
+  "fields": {
+    "name": "Köstekli Saatler",
+    "parent": 22
+  }
+},
+{
+  "model": "products.category",
+  "pk": 24,
+  "fields": {
+    "name": "Gümüş Takılar",
+    "parent": 22
+  }
+}
+]
