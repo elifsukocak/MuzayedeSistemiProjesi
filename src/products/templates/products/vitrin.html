@@ -1,1 +1,53 @@
 <h1>Burası Vitrin</h1>
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sol Taraf: Kategoriler -->
+        <div class="col-md-3">
+            <h4 class="mb-3">Kategoriler</h4>
+            <div class="list-group">
+                <a href="{% url 'products:urun_kategori_incele' %}" class="list-group-item list-group-item-action">Tüm Ürünler</a>
+                {% for kat in kategoriler %}
+                    {% if not kat.ust_kategori %}
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            {{ kat.ad }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Ürün Vitrini -->
+        <div class="col-md-9">
+            <h2 class="mb-4">Müzayede Vitrini</h2>
+            <div class="row">
+                {% for urun in urunler %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if urun.gorsel %}
+                            <img src="{{ urun.gorsel.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ urun.ad }}</h5>
+                            <p class="card-text text-success fw-bold">{{ urun.baslangicFiyati }} ₺</p>
+                            <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-outline-dark btn-sm w-100">İncele</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>Henüz aktif ürün bulunmuyor.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% if urun.gorsel %}
+    <img src="{{ urun.gorsel.url }}" class="card-img-top" alt="{{ urun.ad }}">
+{% else %}
+    <img src="https://via.placeholder.com/300x200?text=Görsel+Yok" class="card-img-top">
+{% endif %}

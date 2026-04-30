@@ -5,11 +5,11 @@ from .forms import UrunEkleForm
 # --- Musteri Islemleri ---
 
 def urun_kategori_incele(request, kategori_slug=None):
-
-    # Musterilerin urunleri kategoriye gore filtreleyip inceledigi ana vitrin (UC-07).
-
-    urunler = Urun.objects.filter(durum='aktif')
+    urunler = Urun.objects.filter(durum='aktif').order_by('-olusturulma_tarihi')
     kategoriler = Kategori.objects.all()
+
+    if kategori_slug:
+        urunler = urunler.filter(kategori__slug=kategori_slug)
 
     return render(request, 'products/vitrin.html', {
         'urunler': urunler,
