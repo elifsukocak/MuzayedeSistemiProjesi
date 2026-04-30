@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Urun, Kategori
-
+from .forms import UrunEkleForm
 
 # --- Musteri Islemleri ---
 
@@ -28,10 +28,18 @@ def urun_detay(request, pk):
 # --- Satıcı Islemleri ---
 
 def urun_ekle(request):
+    if request.method == 'POST':
+        form = UrunEkleForm(request.POST, request.FILES)
+        if form.is_valid():
+            yeni_urun = form.save(commit=False)
+            yeni_urun.satici = request.user
+            yeni_urun.durum = 'onay_bekliyor'
+            yeni_urun.save()  # Şimdi kaydet
+            return redirect('/urunler/vitrin/')
+    else:
+        form = UrunEkleForm()
 
-    # Saticinin sisteme yeni bir urun (taslak/onay bekleyen) eklemesini saglar (UC-04).
-
-    return render(request, 'products/urun_ekle.html')
+    return render(request, 'products/urun_ekle.html', {'form': form})
 
 
 def urun_guncelle(request, pk):
