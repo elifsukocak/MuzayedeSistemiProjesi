@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from .forms import RegisterForm
 
 def register_view(request):
@@ -11,4 +12,21 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, "accounts/register.html", {"form": form})
-# Create your views here.
+
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect("register")
+        else:
+            return render(request, "accounts/login.html", {
+                "error": "Kullanıcı adı veya şifre hatalı"
+            })
+
+    return render(request, "accounts/login.html")
