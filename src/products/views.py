@@ -54,4 +54,6 @@ def urunlerimi_listele(request):
 
     # Saticinin kendi ekledigi urunleri durumlariyla birlikte listeledigi panel (UC-06).
 
-    return render(request, 'products/urunlerim.html')
+    urunler = Urun.objects.all()
+
+    return render(request, 'products/urunlerim.html', {'urunler': urunler})

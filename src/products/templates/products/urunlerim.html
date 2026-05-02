@@ -1,1 +1,28 @@
-<h1>Burası Ürünlerim Listesi</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Ürünlerim</h2>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Fiyat</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for urun in urunler %}
+            <tr>
+                <td>{{ urun.ad }}</td>
+                <td>{{ urun.baslangicFiyati }} ₺</td>
+                <td>
+                    <a href="{% url 'products:urun_guncelle' urun.pk %}" class="btn btn-sm btn-warning">Düzenle</a>
+                    <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-sm btn-info">Görüntüle</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
