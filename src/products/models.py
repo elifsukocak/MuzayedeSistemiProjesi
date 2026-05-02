@@ -31,7 +31,6 @@ class Urun (models.Model):
         ('suresi_doldu', 'Süresi Doldu'),
     ]
 
-    # UML Sınıf Diyagramına Birebir Uygun Alanlar:
     satici = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='urunler',
                                verbose_name="Satıcı")
     ad = models.CharField(max_length=200, verbose_name="Ürün Adı")

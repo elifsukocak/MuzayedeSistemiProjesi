@@ -4,16 +4,25 @@ from .forms import UrunEkleForm,UrunGuncelleForm
 
 # --- Musteri Islemleri ---
 
-def urun_kategori_incele(request, kategori_slug=None):
+def urun_kategori_incele(request, kategori_id=None):
     urunler = Urun.objects.filter(durum='aktif').order_by('-olusturulma_tarihi')
-    kategoriler = Kategori.objects.all()
+    kategoriler = Kategori.objects.filter(ust_kategori__isnull=True)
+    secili_kategori = None
 
-    if kategori_slug:
-        urunler = urunler.filter(kategori__slug=kategori_slug)
+    if kategori_id:
+        # slug yerine pk (id) ile arıyoruz
+        secili_kategori = get_object_or_404(Kategori, pk=kategori_id)
+
+        gecerli_kategori_idleri = [secili_kategori.id]
+        alt_kategoriler = Kategori.objects.filter(ust_kategori=secili_kategori)
+        gecerli_kategori_idleri.extend(alt_kategoriler.values_list('id', flat=True))
+
+        urunler = urunler.filter(kategori_id__in=gecerli_kategori_idleri)
 
     return render(request, 'products/vitrin.html', {
         'urunler': urunler,
-        'kategoriler': kategoriler
+        'kategoriler': kategoriler,
+        'secili_kategori': secili_kategori
     })
 
 
