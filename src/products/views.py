@@ -9,6 +9,12 @@ def urun_kategori_incele(request, kategori_id=None):
     kategoriler = Kategori.objects.filter(ust_kategori__isnull=True)
     secili_kategori = None
 
+    #Arama
+    arama_kelimesi = request.GET.get('q')
+    if arama_kelimesi:
+        urunler = urunler.filter(ad__icontains=arama_kelimesi)
+
+    #Kategori Filtreleme
     if kategori_id:
         # slug yerine pk (id) ile arıyoruz
         secili_kategori = get_object_or_404(Kategori, pk=kategori_id)
@@ -22,7 +28,8 @@ def urun_kategori_incele(request, kategori_id=None):
     return render(request, 'products/vitrin.html', {
         'urunler': urunler,
         'kategoriler': kategoriler,
-        'secili_kategori': secili_kategori
+        'secili_kategori': secili_kategori,
+        'arama_kelimesi': arama_kelimesi,
     })
 
 

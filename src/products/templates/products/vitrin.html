@@ -63,6 +63,22 @@
         <div class="col-md-9">
             <h2 class="mb-4">Müzayede Vitrini {% if secili_kategori %} <span class="text-muted fs-4">- {{ secili_kategori.ad }}</span> {% endif %}</h2>
 
+            <!--Arama Cubugu-->
+            <form method="GET" action="{% url 'products:urun_kategori_incele' %}" class="mb-4">
+                <div class="input-group shadow-sm">
+                    <input type="text" name="q" class="form-control form-control-lg border-primary"
+                           placeholder="Aranacak anahtar kelimeyi giriniz..."
+                           value="{{ arama_kelimesi|default_if_none:'' }}">
+
+                    <button class="btn btn-primary px-4" type="submit">🔍 Ara</button>
+
+                    <!--Temizle Butonu-->
+                    {% if arama_kelimesi %}
+                        <a href="{% url 'products:urun_kategori_incele' %}" class="btn btn-outline-danger px-3 d-flex align-items-center">✖ Temizle</a>
+                    {% endif %}
+                </div>
+            </form>
+
             <div class="row">
                 {% for urun in urunler %}
                 <div class="col-md-6 col-lg-4 mb-4">
@@ -84,7 +100,9 @@
                 {% empty %}
                 <div class="col-12">
                     <div class="alert alert-warning">
-                        {% if secili_kategori %}
+                       {% if arama_kelimesi %}
+                            "<strong>{{ arama_kelimesi }}</strong>" kelimesine uygun ürün bulunamadı.
+                        {% elif secili_kategori %}
                             Bu kategoride henüz aktif ürün bulunmuyor.
                         {% else %}
                             Henüz aktif ürün bulunmuyor.
