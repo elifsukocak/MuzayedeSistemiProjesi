@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Urun, Kategori
-from .forms import UrunEkleForm
+from .forms import UrunEkleForm,UrunGuncelleForm
 
 # --- Musteri Islemleri ---
 
@@ -47,7 +47,15 @@ def urun_guncelle(request, pk):
     # Saticinin henuz muzayedesi baslamamis urunlerini duzenlemesini saglar (UC-05).
 
     urun = get_object_or_404(Urun, pk=pk)
-    return render(request, 'products/urun_guncelle.html', {'urun': urun})
+    if request.method == 'POST':
+        form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
+        if form.is_valid():
+            form.save()
+            return redirect('products:urunlerimi_listele')
+    else:
+        form = UrunGuncelleForm(instance=urun)
+
+    return render(request, 'products/urun_guncelle.html', {'form': form, 'urun': urun})
 
 
 def urunlerimi_listele(request):
