@@ -11,7 +11,6 @@
                 </div>
                 
                 <div class="card-body">
-                    <!-- Satıcıyı Bilgilendirme Mesajı -->
                     {% if urun.durum == 'aktif' %}
                         <div class="alert alert-info shadow-sm">
                             <strong>Bilgi:</strong> Bu ürün şu anda aktif müzayedede olduğu için bilgiler kilitlenmiştir.
@@ -24,12 +23,21 @@
                         {{ form.as_p }}
                         
                         <hr class="mt-4">
-                        <div class="d-flex justify-content-between">
-                            <a href="javascript:history.back()" class="btn btn-outline-secondary">İptal ve Geri Dön</a>
-                           {% if urun.durum != 'aktif' %}
-        <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
-                            {% endif %}
-                        </div>
+                      <div class="d-flex justify-content-between align-items-center">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary">İptal ve Geri Dön</a>
+
+    {% if urun.durum != 'aktif' %}
+        <div class="d-flex gap-2">
+            <button type="submit" name="islem" value="sil" class="btn btn-danger" onclick="return confirm('Bu ürünü tamamen silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                🗑️ Ürünü Sil
+            </button>
+
+            <button type="submit" name="islem" value="kaydet" class="btn btn-success">
+                Değişiklikleri Kaydet
+            </button>
+        </div>
+    {% endif %}
+</div>
                     </form>
                 </div>
             </div>

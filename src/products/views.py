@@ -47,11 +47,20 @@ def urun_guncelle(request, pk):
     # Saticinin henuz muzayedesi baslamamis urunlerini duzenlemesini saglar (UC-05).
 
     urun = get_object_or_404(Urun, pk=pk)
+    silinebilir_durumlar = ['taslak', 'onay_bekliyor', 'suresi_doldu', 'reddedildi']
+
     if request.method == 'POST':
-        form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
-        if form.is_valid():
-            form.save()
-            return redirect('products:urunlerimi_listele')
+        if request.POST.get('islem') == 'sil':
+            if urun.durum in silinebilir_durumlar:
+                urun.delete()
+                return redirect('products:urunlerimi_listele')
+
+        else:
+            form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
+            if form.is_valid():
+                form.save()
+                return redirect('products:urunlerimi_listele')
+
     else:
         form = UrunGuncelleForm(instance=urun)
 
