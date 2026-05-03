@@ -39,6 +39,8 @@ class Urun (models.Model):
                                  verbose_name="Kategori")
     baslangicFiyati = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Başlangıç Fiyatı")
     durum = models.CharField(max_length=20, choices=DURUM_SECENEKLERI, default='onay_bekliyor', verbose_name="Durum")
+    red_sebebi = models.TextField(verbose_name="Reddedilme Sebebi", blank=True, null=True,
+                                  help_text="Eğer ürün reddedilirse, satıcıya gösterilecek sebep.")
 
     # Ekstra gerekli alanlar (Tasarıma zarar vermeyen zorunlu web alanları)
     gorsel = models.ImageField(upload_to='urun_gorselleri/', null=True, blank=True, verbose_name="Görsel")

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Urun, Kategori
 from .forms import UrunEkleForm,UrunGuncelleForm
+from django.contrib import messages
 
 # --- Musteri Islemleri ---
 
@@ -16,7 +17,6 @@ def urun_kategori_incele(request, kategori_id=None):
 
     #Kategori Filtreleme
     if kategori_id:
-        # slug yerine pk (id) ile arıyoruz
         secili_kategori = get_object_or_404(Kategori, pk=kategori_id)
 
         gecerli_kategori_idleri = [secili_kategori.id]
@@ -58,25 +58,32 @@ def urun_ekle(request):
     return render(request, 'products/urun_ekle.html', {'form': form})
 
 
+
+
+
 def urun_guncelle(request, pk):
 
     # Saticinin henuz muzayedesi baslamamis urunlerini duzenlemesini saglar (UC-05).
 
     urun = get_object_or_404(Urun, pk=pk)
-    silinebilir_durumlar = ['taslak', 'onay_bekliyor', 'suresi_doldu', 'reddedildi']
 
     if request.method == 'POST':
-        if request.POST.get('islem') == 'sil':
-            if urun.durum in silinebilir_durumlar:
-                urun.delete()
-                return redirect('products:urunlerimi_listele')
+        form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
+        if form.is_valid():
+            guncellenen_urun = form.save(commit=False)
 
-        else:
-            form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
-            if form.is_valid():
-                form.save()
-                return redirect('products:urunlerimi_listele')
+            if guncellenen_urun.durum == 'reddedildi':
+                guncellenen_urun.durum = 'onay_bekliyor'
+                guncellenen_urun.red_sebebi = ''
 
+                messages.success(request,
+                                 f"'{guncellenen_urun.ad}' başarıyla güncellendi ve yeniden yönetici onayına gönderildi! ⏳")
+            else:
+                # Normal güncelleme mesajı
+                messages.success(request, "Ürün başarıyla güncellendi. ✅")
+
+            guncellenen_urun.save()
+            return redirect('products:urunlerimi_listele')
     else:
         form = UrunGuncelleForm(instance=urun)
 
@@ -87,6 +94,6 @@ def urunlerimi_listele(request):
 
     # Saticinin kendi ekledigi urunleri durumlariyla birlikte listeledigi panel (UC-06).
 
-    urunler = Urun.objects.all()
+    urunler = Urun.objects.filter(satici=request.user)
 
     return render(request, 'products/urunlerim.html', {'urunler': urunler})

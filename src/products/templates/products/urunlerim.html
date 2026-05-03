@@ -2,27 +2,81 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Ürünlerim</h2>
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Ürün Adı</th>
-                <th>Fiyat</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for urun in urunler %}
-            <tr>
-                <td>{{ urun.ad }}</td>
-                <td>{{ urun.baslangicFiyati }} ₺</td>
-                <td>
-                    <a href="{% url 'products:urun_guncelle' urun.pk %}" class="btn btn-sm btn-warning">Düzenle</a>
-                    <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-sm btn-info">Görüntüle</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Ürünlerim</h2>
+        <a href="{% url 'products:urun_ekle' %}" class="btn btn-success shadow-sm">+ Yeni Ürün Ekle</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3">Ürün Adı</th>
+                        <th class="py-3">Fiyat</th>
+                        <th class="py-3">Durum</th>
+                        <th class="text-end pe-4 py-3">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for urun in urunler %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-secondary">{{ urun.ad }}</td>
+                        <td><strong>{{ urun.baslangicFiyati }} ₺</strong></td>
+
+                        <td>
+    {% if urun.durum == 'reddedildi' %}
+        <span class="badge bg-danger px-3 py-2 fs-6 shadow-sm mb-2" style="display: inline-block;">
+            ❌ Reddedildi
+        </span>
+
+        <div class="alert alert-danger p-3 mb-0 shadow-sm" style="border-left: 5px solid #bd2130; background-color: #fff5f5;">
+            <strong style="color: #dc3545; font-size: 1rem;">Reddedilme Sebebi:</strong><br>
+            <p class="mt-1 mb-0" style="color: #b02a37; font-weight: 500;">
+                {{ urun.red_sebebi|default:"Yönetici bir sebep belirtmedi." }}
+            </p>
+            <hr class="my-2" style="border-top: 1px solid #f5c2c7;">
+            <small class="text-muted italic">💡 Lütfen ürünü güncelleyerek tekrar onaya gönderin.</small>
+        </div>
+
+    {% elif urun.durum == 'onay_bekliyor' %}
+        <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm">⏳ Onay Bekliyor</span>
+
+    {% else %}
+        <div style="font-weight: bold;">
+            {{ urun.get_durum_renk|safe }}
+        </div>
+    {% endif %}
+</td>
+
+                        <td class="text-end pe-4">
+                            <!-- Eğer ürün reddedildiyse buton kırmızı olur ve "Yeniden Düzenle" yazar -->
+                            <a href="{% url 'products:urun_guncelle' urun.pk %}" class="btn btn-sm {% if urun.durum == 'reddedildi' %}btn-danger{% else %}btn-warning{% endif %}">
+                                {% if urun.durum == 'reddedildi' %}Yeniden Düzenle{% else %}Düzenle{% endif %}
+                            </a>
+                            <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-sm btn-info">Görüntüle</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            Henüz hiç ürün eklemediniz.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
