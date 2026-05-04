@@ -8,7 +8,7 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("register")
+            return redirect("login")
     else:
         form = RegisterForm()
 
@@ -24,7 +24,11 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("login")
+
+            if user.role == "yonetici":
+                return redirect("/admin/")
+            else:
+                return redirect("profile")
         else:
             return render(request, "accounts/login.html", {
                 "error": "Kullanıcı adı veya şifre hatalı"
@@ -36,6 +40,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
 
 @login_required
 def profile_view(request):
