@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Giriş Yap</h2>
 
 <form method="POST">
@@ -10,3 +13,4 @@
 {% if error %}
 <p>{{ error }}</p>
 {% endif %}
+{% endblock %}

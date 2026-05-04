@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Kayıt Ol</h2>
 
 <form method="POST">
@@ -5,3 +8,4 @@
     {{ form.as_p }}
     <button type="submit">Kayıt Ol</button>
 </form>
+{% endblock %}

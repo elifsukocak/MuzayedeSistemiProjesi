@@ -1,5 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Profil</h2>
 
 <p>Hoş geldin {{ request.user.username }}</p>
-
-<a href="/accounts/logout/">Çıkış Yap</a>
+{% endblock %}
