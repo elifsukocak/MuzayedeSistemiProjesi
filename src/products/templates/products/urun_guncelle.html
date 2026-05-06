@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">✏️ Ürün Güncelle: {{ urun.ad }}</h4>
+                    <span class="badge bg-light text-dark">{{ urun.get_durum_display }}</span>
+                </div>
+                
+                <div class="card-body">
+                    {% if urun.durum == 'aktif' %}
+                        <div class="alert alert-info shadow-sm">
+                            <strong>Bilgi:</strong> Bu ürün şu anda aktif müzayedede olduğu için bilgiler kilitlenmiştir.
+                        </div>
+                    {% endif %}
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {{ form.as_p }}
+                        
+                        <hr class="mt-4">
+                      <div class="d-flex justify-content-between align-items-center">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary">İptal ve Geri Dön</a>
+
+    {% if urun.durum != 'aktif' %}
+        <div class="d-flex gap-2">
+            <button type="submit" name="islem" value="sil" class="btn btn-danger" onclick="return confirm('Bu ürünü tamamen silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                🗑️ Ürünü Sil
+            </button>
+
+            <button type="submit" name="islem" value="kaydet" class="btn btn-success">
+                Değişiklikleri Kaydet
+            </button>
+        </div>
+    {% endif %}
+</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
