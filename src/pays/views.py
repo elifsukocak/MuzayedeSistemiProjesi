@@ -18,5 +18,8 @@ def odeme_paneli(request):
         except (InvalidOperation, TypeError):
             messages.error(request, 'Gecerli bir miktar giriniz.')
             return redirect('pays:odeme_paneli')
-       
+
+        if miktar <= 0:
+            messages.error(request, 'Yuklenecek miktar 0 TL uzerinde olmalidir.')
+            return redirect('pays:odeme_paneli')       
         
