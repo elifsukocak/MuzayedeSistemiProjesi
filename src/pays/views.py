@@ -10,3 +10,6 @@ from .services import add_demo_money, get_wallet
 @login_required
 def odeme_paneli(request):
     wallet = get_wallet(request.user)
+
+    
+    if request.method == 'POST':
