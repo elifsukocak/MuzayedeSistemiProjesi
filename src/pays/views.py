@@ -22,4 +22,10 @@ def odeme_paneli(request):
         if miktar <= 0:
             messages.error(request, 'Yuklenecek miktar 0 TL uzerinde olmalidir.')
             return redirect('pays:odeme_paneli')       
-        
+ 
+        wallet = add_demo_money(request.user, miktar)
+        messages.success(request, f'{miktar} TL demo bakiye eklendi.')
+        return redirect('pays:odeme_paneli')
+
+    return render(request, 'pays/odeme.html', {'wallet': wallet})
+       
