@@ -1,47 +1,45 @@
 {% extends 'base.html' %}
 
+{% block title %}Urun Guncelle | BidLance{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-warning">
-                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">✏️ Ürün Güncelle: {{ urun.ad }}</h4>
-                    <span class="badge bg-light text-dark">{{ urun.get_durum_display }}</span>
-                </div>
-                
-                <div class="card-body">
-                    {% if urun.durum == 'aktif' %}
-                        <div class="alert alert-info shadow-sm">
-                            <strong>Bilgi:</strong> Bu ürün şu anda aktif müzayedede olduğu için bilgiler kilitlenmiştir.
-                        </div>
-                    {% endif %}
-                    
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        {{ form.as_p }}
-                        
-                        <hr class="mt-4">
-                      <div class="d-flex justify-content-between align-items-center">
-    <a href="javascript:history.back()" class="btn btn-outline-secondary">İptal ve Geri Dön</a>
-
-    {% if urun.durum != 'aktif' %}
-        <div class="d-flex gap-2">
-            <button type="submit" name="islem" value="sil" class="btn btn-danger" onclick="return confirm('Bu ürünü tamamen silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
-                🗑️ Ürünü Sil
-            </button>
-
-            <button type="submit" name="islem" value="kaydet" class="btn btn-success">
-                Değişiklikleri Kaydet
-            </button>
+<section class="page-card p-4 mx-auto" style="max-width: 820px;">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+        <div>
+            <div class="text-muted small text-uppercase">Urun duzenle</div>
+            <h1 class="h3 mb-1">{{ urun.ad }}</h1>
+            <p class="text-muted mb-0">Urun bilgilerini guncelle ve tekrar onaya gonder.</p>
         </div>
-    {% endif %}
-</div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <span class="badge text-bg-secondary px-3 py-2">{{ urun.get_durum_display }}</span>
         </div>
     </div>
-</div>
+
+    {% if urun.durum == 'aktif' %}
+        <div class="alert alert-info">Bu urun aktif muzayedede oldugu icin bilgiler kilitlidir.</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="d-grid gap-3">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="d-flex flex-wrap justify-content-between gap-2 pt-2">
+            <a href="{% url 'products:urunlerimi_listele' %}" class="btn btn-outline-secondary">Geri don</a>
+            {% if urun.durum != 'aktif' %}
+                <button type="submit" name="islem" value="kaydet" class="btn btn-bid">Degisiklikleri kaydet</button>
+            {% endif %}
+        </div>
+    </form>
+</section>
 {% endblock %}

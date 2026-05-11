@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Muzayedeler | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mb-4">
+    <div class="text-muted small text-uppercase">Canli liste</div>
+    <h1 class="h2 mb-1">Aktif muzayedeler</h1>
+    <p class="text-muted mb-0">Suresi devam eden muzayedeleri incele ve teklif ver.</p>
+</section>
+
+<section class="row g-3">
+    {% for auction in auctions %}
+        <div class="col-md-6 col-xl-4">
+            <article class="product-card h-100 overflow-hidden">
+                {% if auction.product.gorsel %}
+                    <img src="{{ auction.product.gorsel.url }}" class="w-100" alt="{{ auction.product.ad }}" style="height: 210px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light text-muted d-grid" style="height: 210px; place-items: center;">Gorsel yok</div>
+                {% endif %}
+                <div class="p-3">
+                    <h2 class="h6">{{ auction.product.ad }}</h2>
+                    <div class="text-muted small">Guncel fiyat</div>
+                    <div class="fs-4 fw-bold mb-3">{{ auction.mevcut_fiyat }} TL</div>
+                    <a href="{% url 'auction_detail' auction.id %}" class="btn btn-outline-dark w-100">Muzayedeyi incele</a>
+                </div>
+            </article>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="page-card p-5 text-center">
+                <h2 class="h5">Aktif muzayede yok</h2>
+                <p class="text-muted mb-0">Yeni urunler onaylandiginda burada gorunecek.</p>
+            </div>
+        </div>
+    {% endfor %}
+</section>
+{% endblock %}

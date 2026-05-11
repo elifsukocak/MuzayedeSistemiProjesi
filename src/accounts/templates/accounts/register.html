@@ -1,11 +1,29 @@
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
+
+{% block title %}Kayit Ol | BidLance{% endblock %}
 
 {% block content %}
-<h2>Kayıt Ol</h2>
+<h1 class="h3 mb-3">Kayit ol</h1>
+<p class="text-muted mb-4">BidLance hesabini olustur ve muzayedelere katil.</p>
 
-<form method="POST">
+<form method="POST" class="d-grid gap-3">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Kayıt Ol</button>
+    {% for field in form %}
+        <div>
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <button class="btn btn-primary btn-lg" type="submit">Kayit ol</button>
 </form>
+
+<p class="text-muted mt-4 mb-0">
+    Zaten hesabin var mi? <a href="{% url 'login' %}">Giris yap</a>
+</p>
 {% endblock %}

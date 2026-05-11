@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Urun Onayi | BidLance{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'products:yonetici_onay_listesi' %}" class="btn btn-outline-secondary btn-sm">&larr; Onay listesine don</a>
+</div>
+
+<section class="page-card overflow-hidden">
+    <div class="row g-0">
+        <div class="col-lg-6 bg-white">
+            {% if urun.gorsel %}
+                <img src="{{ urun.gorsel.url }}" class="w-100 h-100" alt="{{ urun.ad }}" style="min-height: 420px; object-fit: contain;">
+            {% else %}
+                <div class="bg-light text-muted d-grid" style="min-height: 420px; place-items: center;">Gorsel yok</div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 p-lg-5">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <div class="text-muted small text-uppercase">Onay incelemesi</div>
+                        <h1 class="h2 mb-1">{{ urun.ad }}</h1>
+                    </div>
+                    <span class="badge text-bg-warning">{{ urun.get_durum_display }}</span>
+                </div>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Satici</dt>
+                    <dd class="col-sm-8">{{ urun.satici.username }}</dd>
+
+                    <dt class="col-sm-4">Kategori</dt>
+                    <dd class="col-sm-8">{{ urun.kategori.ad|default:"Kategori yok" }}</dd>
+
+                    <dt class="col-sm-4">Baslangic fiyati</dt>
+                    <dd class="col-sm-8 fw-semibold">{{ urun.baslangicFiyati }} TL</dd>
+
+                    <dt class="col-sm-4">Eklenme tarihi</dt>
+                    <dd class="col-sm-8">{{ urun.olusturulma_tarihi }}</dd>
+                </dl>
+
+                <h2 class="h5">Aciklama</h2>
+                <p class="text-muted">{{ urun.aciklama }}</p>
+
+                <hr class="my-4">
+
+                <form method="post" class="d-grid gap-3">
+                    {% csrf_token %}
+                    <button type="submit" name="islem" value="onayla" class="btn btn-success btn-lg">
+                        Urunu onayla ve muzayedeye ac
+                    </button>
+
+                    <div>
+                        <label for="red_sebebi" class="form-label">Red sebebi</label>
+                        <textarea id="red_sebebi" name="red_sebebi" class="form-control" rows="4" placeholder="Urun neden reddediliyor?"></textarea>
+                    </div>
+                    <button type="submit" name="islem" value="reddet" class="btn btn-outline-danger">
+                        Urunu reddet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

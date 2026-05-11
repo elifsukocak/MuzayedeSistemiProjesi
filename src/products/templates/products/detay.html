@@ -1,53 +1,90 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ urun.ad }} | BidLance{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <!-- Geri Dön Butonu -->
-    <div class="mb-4">
-    <a href="javascript:history.back()" class="btn btn-outline-secondary">
-        &larr; Geri Dön
-    </a>
+<div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">&larr; Geri don</a>
 </div>
 
-    <div class="row">
-        <!-- Sol Taraf: Ürün Görseli -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    {% if urun.gorsel %}
-                        <img src="{{ urun.gorsel.url }}" class="img-fluid rounded" alt="{{ urun.ad }}" style="max-height: 500px; object-fit: contain;">
-                    {% else %}
-                        <img src="https://via.placeholder.com/600x400?text=Görsel+Yok" class="img-fluid rounded">
-                    {% endif %}
-                </div>
-            </div>
+<section class="page-card overflow-hidden">
+    <div class="row g-0">
+        <div class="col-lg-6 bg-white">
+            {% if urun.gorsel %}
+                <img src="{{ urun.gorsel.url }}" class="w-100 h-100" alt="{{ urun.ad }}" style="min-height: 420px; object-fit: contain;">
+            {% else %}
+                <div class="bg-light text-muted d-grid" style="min-height: 420px; place-items: center;">Gorsel yok</div>
+            {% endif %}
         </div>
 
-        <!-- Sağ Taraf: Ürün Bilgileri -->
-        <div class="col-md-6">
-            <h1 class="fw-bold display-5">{{ urun.ad }}</h1>
-            
-            {% if urun.kategori %}
-                <p class="text-muted fs-5">Kategori: <span class="badge bg-secondary">{{ urun.kategori.ad }}</span></p>
-            {% endif %}
-            
-            <hr>
-            
-            <!-- Açıklama Kısmı -->
-            <h4 class="mt-3">Ürün Detayları</h4>
-            <p class="fs-6 lh-lg">{{ urun.aciklama }}</p>
-            
-            <div class="card mt-5 border-success shadow-sm">
-                <div class="card-body text-center bg-light">
-                    <h5 class="card-title text-muted mb-2">Başlangıç Fiyatı</h5>
-                    <h2 class="card-text text-success fw-bold mb-4">{{ urun.baslangicFiyati }} ₺</h2>
-                    
-                    <button class="btn btn-success btn-lg w-100" disabled>
-                        Teklif Ver (Çok Yakında)
-                    </button>
+        <div class="col-lg-6">
+            <div class="p-4 p-lg-5">
+                {% if urun.kategori %}
+                    <div class="text-muted small mb-2">{{ urun.kategori.ad }}</div>
+                {% endif %}
+                <h1 class="h2 fw-bold mb-3">{{ urun.ad }}</h1>
+                <p class="text-muted">{{ urun.aciklama }}</p>
+
+                <hr class="my-4">
+
+                <div class="d-flex align-items-end justify-content-between gap-3 mb-3">
+                    <div>
+                        <div class="text-muted small">Guncel fiyat</div>
+                        <div class="display-6 fw-bold">
+                            {% if auction %}{{ auction.mevcut_fiyat }}{% else %}{{ urun.baslangicFiyati }}{% endif %} TL
+                        </div>
+                    </div>
+                    {% if auction and auction.is_active %}
+                        <span class="badge text-bg-success">Aktif</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary">Pasif</span>
+                    {% endif %}
                 </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <div class="text-muted small">Teklif suresi</div>
+                            <strong>{{ urun.teklif_suresi_gun }} gun</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <div class="text-muted small">Kalan sure</div>
+                            <strong>{% if auction and auction.is_active %}{{ auction.kalan_gun }} gun{% else %}Kapandi{% endif %}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% if auction and auction.is_active %}
+                    <p class="text-muted small">
+                        Minimum artis:
+                        {% if teklif_ayari %}{{ teklif_ayari.artis_adimi }}{% else %}1.00{% endif %} TL
+                    </p>
+
+                    {% if user.is_authenticated and user == urun.satici %}
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'bids:artis_adimi_guncelle' auction.id %}" class="btn btn-outline-dark">
+                                Artis adimini guncelle
+                            </a>
+                            {% if aktif_teklif_var %}
+                                <form method="post" action="{% url 'auction_close' auction.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-bid w-100">En yuksek teklifi onayla ve sonlandir</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <form method="post" action="{% url 'bids:teklif_ver' auction.id %}" class="d-grid gap-3">
+                            {% csrf_token %}
+                            <input type="number" name="miktar" class="form-control form-control-lg" min="0.01" step="0.01" placeholder="Teklif miktari" required>
+                            <button class="btn btn-bid btn-lg" type="submit">Teklif ver</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100" disabled>Aktif muzayede yok</button>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Yonetici Onaylari | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+        <div>
+            <div class="text-muted small text-uppercase">Yonetici paneli</div>
+            <h1 class="h2 mb-1">Urun onaylari</h1>
+            <p class="text-muted mb-0">Saticilarin ekledigi urunleri incele, onayla veya red sebebiyle geri gonder.</p>
+        </div>
+        <span class="badge text-bg-warning align-self-start px-3 py-2">{{ bekleyen_urunler|length }} bekleyen</span>
+    </div>
+</section>
+
+<section class="page-card overflow-hidden mb-4">
+    <div class="p-4 border-bottom">
+        <h2 class="h5 mb-0">Onay bekleyen urunler</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Urun</th>
+                    <th>Satici</th>
+                    <th>Kategori</th>
+                    <th>Baslangic fiyati</th>
+                    <th class="text-end pe-4">Islem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for urun in bekleyen_urunler %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">{{ urun.ad }}</td>
+                        <td>{{ urun.satici.username }}</td>
+                        <td>{{ urun.kategori.ad|default:"Kategori yok" }}</td>
+                        <td>{{ urun.baslangicFiyati }} TL</td>
+                        <td class="text-end pe-4">
+                            <a class="btn btn-sm btn-bid" href="{% url 'products:yonetici_urun_onay_detay' urun.pk %}">
+                                Incele
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">Onay bekleyen urun yok.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="page-card overflow-hidden">
+    <div class="p-4 border-bottom">
+        <h2 class="h5 mb-0">Son reddedilen urunler</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Urun</th>
+                    <th>Satici</th>
+                    <th>Red sebebi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for urun in reddedilen_urunler %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">{{ urun.ad }}</td>
+                        <td>{{ urun.satici.username }}</td>
+                        <td class="text-danger">{{ urun.red_sebebi|default:"Sebep yok" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-muted">Reddedilen urun yok.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

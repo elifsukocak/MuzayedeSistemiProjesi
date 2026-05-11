@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Artis Adimi | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mx-auto" style="max-width: 640px;">
+    <div class="mb-4">
+        <div class="text-muted small text-uppercase">Muzayede ayari</div>
+        <h1 class="h3 mb-1">Artis adimi guncelle</h1>
+        <p class="text-muted mb-0">{{ auction.product.ad }} icin minimum teklif artis miktarini belirle.</p>
+    </div>
+
+    <form method="post" class="d-grid gap-3">
+        {% csrf_token %}
+        <div>
+            <label for="artis_adimi" class="form-label">Artis adimi (TL)</label>
+            <input type="number" class="form-control form-control-lg" id="artis_adimi" name="artis_adimi" min="0.01" step="0.01" value="{{ teklif_ayari.artis_adimi }}" required>
+        </div>
+        <div class="d-flex justify-content-between gap-2">
+            <a href="{% url 'products:urun_detay' auction.product.pk %}" class="btn btn-outline-secondary">Vazgec</a>
+            <button type="submit" class="btn btn-bid">Kaydet</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

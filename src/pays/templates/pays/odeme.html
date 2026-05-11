@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Odemeler | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+        <div>
+            <div class="text-muted small text-uppercase">Profil</div>
+            <h1 class="h2 mb-1">Odeme ve bakiye</h1>
+            <p class="text-muted mb-0">Demo bakiyeni goruntule ve sahte para yukle.</p>
+        </div>
+        <a class="btn btn-outline-dark align-self-start" href="{% url 'profile' %}">Profile don</a>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-5">
+        <div class="page-card p-4 h-100">
+            <div class="text-muted small">Mevcut bakiye</div>
+            <div class="display-6 fw-bold mb-0">{{ wallet.bakiye }} TL</div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="page-card p-4">
+            <h2 class="h5 mb-3">Demo para yukle</h2>
+            <form method="post" class="d-grid gap-3">
+                {% csrf_token %}
+                <div>
+                    <label for="miktar" class="form-label">Miktar (TL)</label>
+                    <input type="number" class="form-control form-control-lg" id="miktar" name="miktar" min="1" step="1" value="1000" required>
+                </div>
+                <button class="btn btn-bid" type="submit">Bakiyeye ekle</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
