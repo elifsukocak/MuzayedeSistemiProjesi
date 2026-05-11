@@ -12,9 +12,10 @@ class Wallet(models.Model):
         related_name='wallet',
         verbose_name='Kullanici',
     )
-     bakiye = models.DecimalField(
+    bakiye = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         default=Decimal('10000.00'),
         verbose_name='Sahte Para Bakiyesi',
-    )
+     )
+     guncellenme_tarihi = models.DateTimeField(auto_now=True)
