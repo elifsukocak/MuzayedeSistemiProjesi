@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Urunlerim | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+        <div>
+            <div class="text-muted small text-uppercase">Satici paneli</div>
+            <h1 class="h2 mb-1">Urunlerim</h1>
+            <p class="text-muted mb-0">Ekledigin urunlerin onay ve muzayede durumlarini takip et.</p>
+        </div>
+        <div>
+            <a href="{% url 'products:urun_ekle' %}" class="btn btn-bid">Yeni urun ekle</a>
+        </div>
+    </div>
+</section>
+
+<section class="page-card overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4 py-3">Urun adi</th>
+                    <th class="py-3">Fiyat</th>
+                    <th class="py-3">Durum</th>
+                    <th class="text-end pe-4 py-3">Islemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for urun in urunler %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">{{ urun.ad }}</td>
+                        <td>{{ urun.baslangicFiyati }} TL</td>
+                        <td>
+                            {% if urun.durum == 'reddedildi' %}
+                                <span class="badge text-bg-danger">Reddedildi</span>
+                                <div class="small text-danger mt-2">{{ urun.red_sebebi|default:"Yonetici sebep belirtmedi." }}</div>
+                            {% elif urun.durum == 'onay_bekliyor' %}
+                                <span class="badge text-bg-warning">Onay bekliyor</span>
+                            {% elif urun.durum == 'aktif' %}
+                                <span class="badge text-bg-success">Aktif</span>
+                            {% elif urun.durum == 'satildi' %}
+                                <span class="badge text-bg-primary">Satildi</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">{{ urun.get_durum_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-sm btn-outline-dark">Goruntule</a>
+                            <a href="{% url 'products:urun_guncelle' urun.pk %}" class="btn btn-sm btn-outline-primary">Duzenle</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">Henuz urun eklemediniz.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

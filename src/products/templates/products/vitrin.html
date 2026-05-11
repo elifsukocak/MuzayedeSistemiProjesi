@@ -1,11 +1,91 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <h1>Ürün Listesi</h1>
-<p>Bu sayfada açık artırmaya çıkarılan ürünler listelenecek.</p>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}Ana Sayfa | BidLance{% endblock %}
+
+{% block content %}
+<section class="page-card p-4 mb-4">
+    <div class="row align-items-center g-3">
+        <div class="col-lg-6">
+            <div class="text-muted small text-uppercase">Online muzayede</div>
+            <h1 class="display-6 fw-bold mb-2">BidLance vitrini</h1>
+            <p class="text-muted mb-0">Aktif urunleri kesfet, teklif ver ve muzayedeleri takip et.</p>
+        </div>
+        <div class="col-lg-6">
+            <form method="GET" action="{% url 'products:urun_kategori_incele' %}">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="q" class="form-control" placeholder="Urun, kategori veya anahtar kelime ara" value="{{ arama_kelimesi|default_if_none:'' }}">
+                    <button class="btn btn-bid px-4" type="submit">Ara</button>
+                    {% if arama_kelimesi %}
+                        <a href="{% url 'products:urun_kategori_incele' %}" class="btn btn-outline-secondary">Temizle</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4">
+    <aside class="col-lg-3">
+        <div class="page-card p-3">
+            <h2 class="h5 mb-3">Kategoriler</h2>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'products:urun_kategori_incele' %}" class="list-group-item list-group-item-action {% if not secili_kategori %}active{% endif %}">
+                    Tum urunler
+                </a>
+
+                {% for kat in kategoriler %}
+                    <a href="{% url 'products:urun_kategori_incele' kat.pk %}" class="list-group-item list-group-item-action {% if secili_kategori.pk == kat.pk %}active{% endif %}">
+                        {{ kat.ad }}
+                    </a>
+                    {% for alt_kat in kat.subcategories.all %}
+                        <a href="{% url 'products:urun_kategori_incele' alt_kat.pk %}" class="list-group-item list-group-item-action ps-4 {% if secili_kategori.pk == alt_kat.pk %}active{% endif %}">
+                            {{ alt_kat.ad }}
+                        </a>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+
+    <section class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <h2 class="h4 mb-1">
+                    {% if secili_kategori %}{{ secili_kategori.ad }}{% else %}One cikan urunler{% endif %}
+                </h2>
+                <p class="text-muted mb-0">{{ urunler|length }} aktif ilan listeleniyor.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% for urun in urunler %}
+                <div class="col-md-6 col-xl-4">
+                    <article class="product-card h-100 overflow-hidden">
+                        {% if urun.gorsel %}
+                            <img src="{{ urun.gorsel.url }}" class="w-100" alt="{{ urun.ad }}" style="height: 210px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light d-grid place-items-center text-muted" style="height: 210px; display: grid; place-items: center;">Gorsel yok</div>
+                        {% endif %}
+
+                        <div class="p-3 d-flex flex-column h-100">
+                            <h3 class="h6 mb-2">{{ urun.ad }}</h3>
+                            <p class="text-muted small mb-3">{{ urun.aciklama|truncatechars:74 }}</p>
+                            <div class="mt-auto d-flex align-items-center justify-content-between gap-2">
+                                <strong class="fs-5">{{ urun.baslangicFiyati }} TL</strong>
+                                <a href="{% url 'products:urun_detay' urun.pk %}" class="btn btn-outline-dark btn-sm">Incele</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="page-card p-5 text-center">
+                        <h3 class="h5">Urun bulunamadi</h3>
+                        <p class="text-muted mb-0">Arama veya kategori filtresini degistirerek tekrar deneyebilirsin.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
