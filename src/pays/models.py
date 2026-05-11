@@ -27,4 +27,9 @@ class Wallet(models.Model):
      def __str__(self):
      return f"{self.user} - {self.bakiye} TL"
 
+     def clean(self):
+        if self.bakiye < 0:
+            raise ValidationError({'bakiye': 'Bakiye negatif olamaz.'})
+
+
 
