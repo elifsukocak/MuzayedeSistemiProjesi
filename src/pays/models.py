@@ -19,3 +19,6 @@ class Wallet(models.Model):
         verbose_name='Sahte Para Bakiyesi',
      )
      guncellenme_tarihi = models.DateTimeField(auto_now=True)
+     class Meta:
+        verbose_name = 'Cuzdan'
+        verbose_name_plural = 'Cuzdanlar'
