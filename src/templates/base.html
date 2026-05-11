@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}BidLance{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bid-blue: #3665f3;
+            --bid-red: #e53238;
+            --bid-yellow: #f5af02;
+            --bid-green: #86b817;
+            --ink: #1f2937;
+            --line: #e5e7eb;
+            --page: #f7f7f8;
+        }
+
+        body {
+            background: var(--page);
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .topbar {
+            height: 68px;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .menu-trigger {
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--line);
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .menu-trigger span {
+            width: 4px;
+            height: 4px;
+            border-radius: 999px;
+            background: #111827;
+            display: block;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #111827;
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: conic-gradient(from 180deg, var(--bid-blue), var(--bid-green), var(--bid-yellow), var(--bid-red), var(--bid-blue));
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .brand-word span:nth-child(1) { color: var(--bid-blue); }
+        .brand-word span:nth-child(2) { color: var(--bid-red); }
+        .brand-word span:nth-child(3) { color: var(--bid-yellow); }
+        .brand-word span:nth-child(4) { color: var(--bid-green); }
+
+        .layout-shell {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 18px 48px;
+        }
+
+        .offcanvas {
+            max-width: 320px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-radius: 8px;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .menu-link:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .page-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        .product-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            transition: box-shadow .15s ease, transform .15s ease;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 10px 24px rgba(17, 24, 39, .08);
+            transform: translateY(-1px);
+        }
+
+        .btn-bid {
+            background: var(--bid-blue);
+            border-color: var(--bid-blue);
+            color: #fff;
+        }
+
+        .btn-bid:hover {
+            background: #264fd4;
+            border-color: #264fd4;
+            color: #fff;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="topbar">
+        <div class="container-fluid h-100 px-3 px-md-4 d-flex align-items-center justify-content-between">
+            <button class="menu-trigger rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainMenu" aria-label="Menuyu ac">
+                <span></span><span></span><span></span>
+            </button>
+
+            <a class="brand-logo" href="{% url 'products:urun_kategori_incele' %}" aria-label="BidLance ana sayfa">
+                <span class="brand-mark">B</span>
+                <span class="brand-word fs-4">
+                    <span>Bid</span><span>l</span><span>a</span><span>nce</span>
+                </span>
+            </a>
+        </div>
+    </header>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mainMenu" aria-labelledby="mainMenuLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="mainMenuLabel">BidLance Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Kapat"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="d-grid gap-1">
+                <a class="menu-link" href="{% url 'products:urun_kategori_incele' %}">Ana sayfa <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'auction_list' %}">Muzayedeler <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'profile' %}">Profil <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'pays:odeme_paneli' %}">Odemeler <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'bids:tekliflerim' %}">Tekliflerim <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'products:urunlerimi_listele' %}">Urunlerim <span>&rsaquo;</span></a>
+                <a class="menu-link" href="{% url 'products:urun_ekle' %}">Urun ekle <span>&rsaquo;</span></a>
+                {% if user.is_authenticated and user.role == 'yonetici' or user.is_staff %}
+                    <a class="menu-link" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari <span>&rsaquo;</span></a>
+                {% endif %}
+            </nav>
+
+            <hr>
+
+            {% if user.is_authenticated %}
+                <div class="small text-muted mb-2">Oturum</div>
+                <div class="fw-semibold">{{ user.username }}</div>
+                <div class="text-muted small mb-3">{{ user.get_role_display }}</div>
+                <a class="btn btn-outline-dark w-100" href="{% url 'logout' %}">Cikis yap</a>
+            {% else %}
+                <a class="btn btn-bid w-100 mb-2" href="{% url 'login' %}">Giris yap</a>
+                <a class="btn btn-outline-dark w-100" href="{% url 'register' %}">Kayit ol</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <main class="layout-shell">
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
