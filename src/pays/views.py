@@ -13,3 +13,10 @@ def odeme_paneli(request):
 
     
     if request.method == 'POST':
+        try:
+            miktar = Decimal(str(request.POST.get('miktar')))
+        except (InvalidOperation, TypeError):
+            messages.error(request, 'Gecerli bir miktar giriniz.')
+            return redirect('pays:odeme_paneli')
+       
+        
