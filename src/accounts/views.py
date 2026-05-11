@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
+from bids.models import Bid, BidStatusNotification
+from pays.services import get_wallet
+from products.models import Urun
 
 def register_view(request):
     if request.method == "POST":
@@ -26,7 +29,7 @@ def login_view(request):
             login(request, user)
 
             if user.role == "yonetici":
-                return redirect("/admin/")
+                return redirect("products:yonetici_onay_listesi")
             else:
                 return redirect("profile")
         else:
@@ -44,4 +47,25 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, "accounts/profile.html")
+    teklifler = Bid.objects.filter(kullanici=request.user)
+    urunler = Urun.objects.filter(satici=request.user)
+    bildirimler = BidStatusNotification.objects.filter(
+        kullanici=request.user,
+    ).select_related('bid', 'bid__auction', 'bid__auction__product')[:10]
+    okunmamis_bildirimler = BidStatusNotification.objects.filter(
+        kullanici=request.user,
+        okundu=False,
+    )
+    okunmamis_bildirim_sayisi = okunmamis_bildirimler.count()
+    wallet = get_wallet(request.user)
+
+    okunmamis_bildirimler.update(okundu=True)
+
+    return render(request, "accounts/profile.html", {
+        "teklif_sayisi": teklifler.count(),
+        "aktif_teklif_sayisi": teklifler.filter(durum='GECERLI').count(),
+        "urun_sayisi": urunler.count(),
+        "okunmamis_bildirim_sayisi": okunmamis_bildirim_sayisi,
+        "bildirimler": bildirimler,
+        "wallet": wallet,
+    })
