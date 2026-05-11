@@ -18,3 +18,14 @@ def add_demo_money(user, amount):
     wallet.save(update_fields=['bakiye', 'guncellenme_tarihi'])
     return wallet
 
+
+@transaction.atomic
+def transfer_auction_payment(buyer, seller, amount):
+    buyer_wallet = Wallet.objects.select_for_update().get_or_create(user=buyer)[0]
+    seller_wallet = Wallet.objects.select_for_update().get_or_create(user=seller)[0]
+    amount = Decimal(str(amount))
+
+    buyer_wallet.bakiye -= amount
+    seller_wallet.bakiye += amount
+    buyer_wallet.save(update_fields=['bakiye', 'guncellenme_tarihi'])
+    seller_wallet.save(update_fields=['bakiye', 'guncellenme_tarihi'])
