@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ auction.product.ad }} Muzayedesi | BidLance{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'auction_list' %}" class="btn btn-outline-secondary btn-sm">&larr; Muzayedelere don</a>
+</div>
+
+<section class="row g-4">
+    <div class="col-lg-7">
+        <div class="page-card overflow-hidden">
+            {% if auction.product.gorsel %}
+                <img src="{{ auction.product.gorsel.url }}" class="w-100" alt="{{ auction.product.ad }}" style="max-height: 520px; object-fit: contain;">
+            {% else %}
+                <div class="bg-light text-muted d-grid" style="height: 420px; place-items: center;">Gorsel yok</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="page-card p-4 mb-4">
+            <h1 class="h3">{{ auction.product.ad }}</h1>
+            <p class="text-muted">{{ auction.product.aciklama }}</p>
+            <div class="text-muted small">Guncel fiyat</div>
+            <div class="display-6 fw-bold mb-3">{{ auction.mevcut_fiyat }} TL</div>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="border rounded p-2">
+                        <div class="text-muted small">Teklif suresi</div>
+                        <strong>{{ auction.product.teklif_suresi_gun }} gun</strong>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="border rounded p-2">
+                        <div class="text-muted small">Kalan sure</div>
+                        <strong>{% if auction.is_active %}{{ auction.kalan_gun }} gun{% else %}Kapandi{% endif %}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {% if auction.is_active %}
+                {% if user.is_authenticated and user == auction.product.satici %}
+                    {% if teklifler %}
+                    <form method="post" action="{% url 'auction_close' auction.id %}" class="d-grid gap-3">
+                        {% csrf_token %}
+                        <button class="btn btn-bid btn-lg" type="submit">En yuksek teklifi onayla ve sonlandir</button>
+                    </form>
+                    {% else %}
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Henuz teklif yok</button>
+                    {% endif %}
+                {% else %}
+                    <form method="post" action="{% url 'bid_view' auction.id %}" class="d-grid gap-3">
+                        {% csrf_token %}
+                        <input type="number" name="miktar" class="form-control form-control-lg" min="0.01" step="0.01" placeholder="Teklif miktari" required>
+                        <button class="btn btn-bid btn-lg" type="submit">Teklif ver</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <button class="btn btn-secondary btn-lg w-100" disabled>Muzayede kapandi</button>
+            {% endif %}
+        </div>
+
+        <div class="page-card p-4">
+            <h2 class="h5 mb-3">Teklif gecmisi</h2>
+            {% if teklifler %}
+                <div class="list-group list-group-flush">
+                    {% for teklif in teklifler %}
+                        <div class="list-group-item px-0 d-flex justify-content-between">
+                            <span>{{ teklif.kullanici.username }}</span>
+                            <strong>{{ teklif.miktar }} TL</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">Henuz teklif yok.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
