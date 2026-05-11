@@ -38,6 +38,18 @@ class Urun (models.Model):
     kategori = models.ForeignKey(Kategori, on_delete=models.SET_NULL, null=True, blank=True, related_name='urunler',
                                  verbose_name="Kategori")
     baslangicFiyati = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Başlangıç Fiyatı")
+    artis_adimi = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=1,
+        verbose_name="Artış Adımı",
+        help_text="Tekliflerin kaç TL aralıklarla artacağını belirler.",
+    )
+    teklif_suresi_gun = models.PositiveIntegerField(
+        default=7,
+        verbose_name="Teklif Süresi (Gün)",
+        help_text="Ürün onaylandıktan sonra müzayedenin kaç gün açık kalacağı.",
+    )
     durum = models.CharField(max_length=20, choices=DURUM_SECENEKLERI, default='onay_bekliyor', verbose_name="Durum")
     red_sebebi = models.TextField(verbose_name="Reddedilme Sebebi", blank=True, null=True,
                                   help_text="Eğer ürün reddedilirse, satıcıya gösterilecek sebep.")
