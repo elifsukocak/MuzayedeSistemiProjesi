@@ -52,3 +52,9 @@ def artis_adimi_guncelle(request, auction_id):
             return redirect('auction_detail', id=auction.id)
 
     return render(request, 'bids/artis_adimi_form.html', {'auction': auction, 'teklif_ayari': teklif_ayari})
+
+@login_required
+def tekliflerim(request):
+    teklifler = Bid.objects.filter(kullanici=request.user).select_related('auction', 'auction__product')
+    bildirimler = BidStatusNotification.objects.filter(kullanici=request.user).select_related('bid', 'bid__auction')
+    return render(request, 'bids/tekliflerim.html', {'teklifler': teklifler, 'bildirimler': bildirimler})
