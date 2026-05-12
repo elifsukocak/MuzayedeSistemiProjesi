@@ -1,3 +1,46 @@
-from django.test import TestCase
+from decimal import Decimal
 
-# Create your tests here.
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.utils import timezone
+
+from auction.models import Auction
+from auction.services import place_bid
+from products.models import Urun
+from .models import Bid, BidIncrement, BidStatusNotification
+
+
+class BidServiceTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.satici = User.objects.create_user(
+            username='satici',
+            password='testpass123',
+            role='satici',
+            tc_kimlik='11111111111',
+        )
+        self.musteri1 = User.objects.create_user(
+            username='musteri1',
+            password='testpass123',
+            role='musteri',
+            tc_kimlik='22222222222',
+        )
+        self.musteri2 = User.objects.create_user(
+            username='musteri2',
+            password='testpass123',
+            role='musteri',
+            tc_kimlik='33333333333',
+        )
+        self.urun = Urun.objects.create(
+            satici=self.satici,
+            ad='Test Urun',
+            aciklama='Aciklama',
+            baslangicFiyati=Decimal('100.00'),
+            durum='aktif',
+        )
+        self.auction = Auction.objects.create(
+            product=self.urun,
+            bitis_zamani=timezone.now() + timezone.timedelta(days=1),
+            mevcut_fiyat=Decimal('100.00'),
+        )
+        BidIncrement.objects.create(auction=self.auction, artis_adimi=Decimal('10.00'))
