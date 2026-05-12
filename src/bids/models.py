@@ -30,3 +30,9 @@ class BidIncrement(models.Model):
     def __str__(self):
         return f"{self.auction} - {self.artis_adimi} TL"
 
+class Bid(models.Model):
+    DURUM_SECENEKLERI = [
+        ('GECERLI', 'Aktif / En Yuksek Teklif'),
+        ('GECILDI', 'Gecildi'),
+        ('IPTAL', 'Iptal Edildi'),
+    ]
