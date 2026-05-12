@@ -1,5 +1,5 @@
 from decimal import Decimal, InvalidOperation
-
+from django.core.mail import send_mail
 from django.db import transaction
 
 from bids.models import Bid, BidIncrement, BidStatusNotification
@@ -60,3 +60,30 @@ def place_bid(user, auction, miktar):
         auction.kazanan = user
         auction.save()
         return "Basarili: Teklifiniz aktif teklif olarak kaydedildi."
+
+def kazanana_eposta_gonder(auction, winner_user):
+    """Müzayede bittiğinde kazanan müşteriye e-posta atar."""
+
+    # Kullanıcının e-posta adresi yoksa hata vermemesi için kontrol
+    if not winner_user.email:
+        return "Hata: Kullanıcının kayıtlı e-posta adresi yok."
+
+    konu = f"Tebrikler! {auction.product.ad} Müzayedesini Kazandınız!"
+    mesaj = (
+        f"Merhaba {winner_user.username},\n\n"
+        f"Harika bir haberimiz var! '{auction.product.ad}' ürünü için verdiğiniz "
+        f"{auction.mevcut_fiyat} TL'lik teklif ile müzayedeyi kazandınız.\n\n"
+        f"Ödeme adımları ve detaylar için sisteme giriş yapabilirsiniz.\n\n"
+        f"İyi günler dileriz,\n"
+        f"BidLance Ekibi"
+    )
+
+    # Django'nun hazır mail gönderme metodu
+    send_mail(
+        subject=konu,
+        message=mesaj,
+        from_email='noreply@bidlance.com',
+        recipient_list=[winner_user.email],
+        fail_silently=False,  # Hata olursa görelim
+    )
+    return "Başarılı: E-posta gönderildi."

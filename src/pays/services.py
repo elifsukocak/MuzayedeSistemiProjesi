@@ -10,7 +10,7 @@ def get_wallet(user):
     return wallet
 
 
-    @transaction.atomic
+@transaction.atomic
 def add_demo_money(user, amount):
     wallet = Wallet.objects.select_for_update().get_or_create(user=user)[0]
     wallet.bakiye += Decimal(str(amount))

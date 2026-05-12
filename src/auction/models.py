@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from products.models import Urun
-
+from .services import kazanana_eposta_gonder
 
 class Auction(models.Model):
     product = models.OneToOneField(
@@ -69,6 +69,7 @@ class Auction(models.Model):
                 bid=winner_bid,
                 mesaj=f"{self.product.ad} satildi. {winner_bid.miktar} TL bakiyenize aktarildi.",
             )
+            kazanana_eposta_gonder(self, self.kazanan)
         else:
             self.product.durum = 'suresi_doldu'
 
