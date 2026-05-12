@@ -18,3 +18,15 @@ class BidIncrement(models.Model):
         verbose_name="Artis Adimi",
         help_text="Yeni teklif, mevcut fiyatin en az bu miktar kadar uzerinde olmalidir.",
     )
+    
+    class Meta:
+        verbose_name = "Teklif Artis Ayari"
+        verbose_name_plural = "Teklif Artis Ayarlari"
+
+    def clean(self):
+        if self.artis_adimi <= 0:
+            raise ValidationError({"artis_adimi": "Artis adimi 0'dan buyuk olmalidir."})
+
+    def __str__(self):
+        return f"{self.auction} - {self.artis_adimi} TL"
+
