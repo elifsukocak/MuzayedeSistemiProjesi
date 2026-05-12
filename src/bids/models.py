@@ -36,3 +36,24 @@ class Bid(models.Model):
         ('GECILDI', 'Gecildi'),
         ('IPTAL', 'Iptal Edildi'),
     ]
+    
+    auction = models.ForeignKey(
+        'auction.Auction',
+        on_delete=models.CASCADE,
+        related_name='teklifler',
+        verbose_name="Muzayede",
+    )
+    kullanici = models.ForeignKey(#
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='teklifleri',
+        verbose_name="Teklif Veren",
+    )
+    miktar = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Teklif Miktari")
+    durum = models.CharField(#
+        max_length=10,
+        choices=DURUM_SECENEKLERI,
+        default='GECERLI',
+        verbose_name="Teklif Durumu",
+    )
+    zaman = models.DateTimeField(auto_now_add=True, verbose_name="Teklif Zamani")
