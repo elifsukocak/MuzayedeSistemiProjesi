@@ -30,14 +30,15 @@ class BidIncrement(models.Model):
     def __str__(self):
         return f"{self.auction} - {self.artis_adimi} TL"
 
-class Bid(models.Model):
+
+class Bid(models.Model):# Teklif modeli, bir kullanicinin bir muzayede icin verdigi teklifi temsil eder
     DURUM_SECENEKLERI = [
         ('GECERLI', 'Aktif / En Yuksek Teklif'),
         ('GECILDI', 'Gecildi'),
         ('IPTAL', 'Iptal Edildi'),
     ]
-    
-    auction = models.ForeignKey(
+
+    auction = models.ForeignKey(# auction.Auction modeli ile iliskilendirme, bir teklif bir muzayede icin verilir
         'auction.Auction',
         on_delete=models.CASCADE,
         related_name='teklifler',
@@ -57,7 +58,7 @@ class Bid(models.Model):
         verbose_name="Teklif Durumu",
     )
     zaman = models.DateTimeField(auto_now_add=True, verbose_name="Teklif Zamani")
-    
+
     class Meta:
         verbose_name = "Teklif"
         verbose_name_plural = "Teklifler"
@@ -73,3 +74,29 @@ class Bid(models.Model):
     @property
     def aktif_mi(self):
         return self.durum == 'GECERLI'
+
+
+class BidStatusNotification(models.Model):
+    kullanici = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='teklif_bildirimleri',
+        verbose_name="Kullanici",
+    )
+    bid = models.ForeignKey(
+        Bid,
+        on_delete=models.CASCADE,
+        related_name='bildirimler',
+        verbose_name="Teklif",
+    )
+    mesaj = models.CharField(max_length=255, verbose_name="Mesaj")
+    okundu = models.BooleanField(default=False, verbose_name="Okundu mu?")
+    olusturulma_tarihi = models.DateTimeField(auto_now_add=True, verbose_name="Olusturulma Tarihi")
+
+    class Meta:
+        verbose_name = "Teklif Bildirimi"
+        verbose_name_plural = "Teklif Bildirimleri"
+        ordering = ['-olusturulma_tarihi']
+
+    def __str__(self):
+        return f"{self.kullanici} - {self.mesaj}"
