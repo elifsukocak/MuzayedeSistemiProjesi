@@ -44,3 +44,9 @@ class BidServiceTests(TestCase):
             mevcut_fiyat=Decimal('100.00'),
         )
         BidIncrement.objects.create(auction=self.auction, artis_adimi=Decimal('10.00'))
+    
+    def test_bid_must_follow_increment_step(self):
+        mesaj = place_bid(self.musteri1, self.auction, Decimal('105.00'))
+
+        self.assertIn('en az 110.00', mesaj)
+        self.assertEqual(Bid.objects.count(), 0)
