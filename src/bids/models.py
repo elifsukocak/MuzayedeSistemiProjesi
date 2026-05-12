@@ -57,3 +57,19 @@ class Bid(models.Model):
         verbose_name="Teklif Durumu",
     )
     zaman = models.DateTimeField(auto_now_add=True, verbose_name="Teklif Zamani")
+    
+    class Meta:
+        verbose_name = "Teklif"
+        verbose_name_plural = "Teklifler"
+        ordering = ['-miktar', '-zaman']
+        indexes = [
+            models.Index(fields=['auction', 'durum']),
+            models.Index(fields=['kullanici', 'durum']),
+        ]
+
+    def __str__(self):
+        return f"{self.kullanici} - {self.auction} - {self.miktar} TL"
+
+    @property
+    def aktif_mi(self):
+        return self.durum == 'GECERLI'
