@@ -12,6 +12,9 @@ from .models import Urun, Kategori
 def yonetici_mi(user):
     return user.is_authenticated and (user.role == 'yonetici' or user.is_staff)
 
+def satici_mi(user):
+    return user.is_authenticated and user.role == 'satici'
+
 # --- Musteri Islemleri ---
 
 def urun_kategori_incele(request, kategori_id=None):
@@ -68,6 +71,7 @@ def urun_detay(request, pk):
 # --- Satıcı Islemleri ---
 
 @login_required
+@user_passes_test(satici_mi)
 def urun_ekle(request):
     if request.method == 'POST':
         form = UrunEkleForm(request.POST, request.FILES)
@@ -87,11 +91,12 @@ def urun_ekle(request):
 
 
 @login_required
+@user_passes_test(satici_mi)
 def urun_guncelle(request, pk):
 
     # Saticinin henuz muzayedesi baslamamis urunlerini duzenlemesini saglar (UC-05).
 
-    urun = get_object_or_404(Urun, pk=pk)
+    urun = get_object_or_404(Urun, pk=pk, satici=request.user)
 
     if request.method == 'POST':
         form = UrunGuncelleForm(request.POST, request.FILES, instance=urun)
@@ -115,7 +120,8 @@ def urun_guncelle(request, pk):
 
     return render(request, 'products/urun_guncelle.html', {'form': form, 'urun': urun})
 
-
+@login_required
+@user_passes_test(satici_mi)
 def urunlerimi_listele(request):
 
     # Saticinin kendi ekledigi urunleri durumlariyla birlikte listeledigi panel (UC-06).

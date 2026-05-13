@@ -5,6 +5,9 @@ from .forms import RegisterForm
 from bids.models import Bid, BidStatusNotification
 from pays.services import get_wallet
 from products.models import Urun
+import random
+from django.core.mail import send_mail
+from .models import AccountDeleteCode
 
 def register_view(request):
     if request.method == "POST":
@@ -30,8 +33,16 @@ def login_view(request):
 
             if user.role == "yonetici":
                 return redirect("products:yonetici_onay_listesi")
+
+            elif user.role == "satici":
+                return redirect("products:urunlerimi_listele")
+
+            elif user.role == "musteri":
+                return redirect("bids:tekliflerim")
+
             else:
                 return redirect("profile")
+
         else:
             return render(request, "accounts/login.html", {
                 "error": "Kullanıcı adı veya şifre hatalı"
@@ -69,3 +80,52 @@ def profile_view(request):
         "bildirimler": bildirimler,
         "wallet": wallet,
     })
+@login_required
+def hesap_silme_kodu_gonder(request):
+    code = str(random.randint(1000, 9999))
+
+    AccountDeleteCode.objects.update_or_create(
+        user=request.user,
+        defaults={"code": code}
+    )
+
+    send_mail(
+        "BidLance Hesap Silme Kodu",
+        f"Hesabınızı pasifleştirmek için doğrulama kodunuz: {code}",
+        None,
+        [request.user.email],
+        fail_silently=False,
+    )
+
+    return redirect("hesap_silme_onay")
+
+
+@login_required
+def hesap_silme_onay(request):
+    if request.method == "POST":
+        girilen_kod = request.POST.get("code")
+
+        try:
+            kayit = AccountDeleteCode.objects.get(user=request.user)
+        except AccountDeleteCode.DoesNotExist:
+            return render(request, "accounts/hesap_silme_onay.html", {
+                "error": "Önce doğrulama kodu almalısınız."
+            })
+        if kayit.is_expired():
+            kayit.delete()
+            return render(request, "accounts/hesap_silme_onay.html", {
+            "error": "Kodun süresi dolmuş. Lütfen yeniden kod alın."
+            })
+        if kayit.code == girilen_kod:
+            user = request.user
+            user.is_active = False
+            user.save()
+            kayit.delete()
+            logout(request)
+            return redirect("login")
+
+        return render(request, "accounts/hesap_silme_onay.html", {
+            "error": "Kod hatalı."
+        })
+
+    return render(request, "accounts/hesap_silme_onay.html")
