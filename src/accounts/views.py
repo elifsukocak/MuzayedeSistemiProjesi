@@ -30,8 +30,16 @@ def login_view(request):
 
             if user.role == "yonetici":
                 return redirect("products:yonetici_onay_listesi")
+
+            elif user.role == "satici":
+                return redirect("products:urunlerimi_listele")
+
+            elif user.role == "musteri":
+                return redirect("bids:tekliflerim")
+
             else:
                 return redirect("profile")
+
         else:
             return render(request, "accounts/login.html", {
                 "error": "Kullanıcı adı veya şifre hatalı"
