@@ -3,6 +3,79 @@
 {% block title %}Ana Sayfa | BidLance{% endblock %}
 
 {% block content %}
+<style>
+    .kategori-listesi {
+        display: grid;
+        gap: 6px;
+    }
+
+    .kategori-satiri {
+        display: flex;
+        align-items: stretch;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .kategori-link {
+        flex: 1;
+        min-width: 0;
+        padding: 10px 12px;
+        color: #1f2937;
+        text-decoration: none;
+    }
+
+    .kategori-link:hover {
+        background: #f3f4f6;
+        color: #111827;
+    }
+
+    .kategori-link.active {
+        background: #3665f3;
+        color: #fff;
+    }
+
+    .kategori-toggle {
+        width: 44px;
+        border: 0;
+        border-left: 1px solid #e5e7eb;
+        background: #f8f9fa;
+        color: #1f2937;
+        font-weight: 700;
+    }
+
+    .alt-kategoriler {
+        display: grid;
+        gap: 4px;
+        padding: 6px 0 4px 14px;
+    }
+
+    .alt-kategoriler.d-none {
+        display: none;
+    }
+
+    .alt-kategori-link {
+        display: block;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 9px 12px;
+        color: #1f2937;
+        text-decoration: none;
+        background: #fff;
+    }
+
+    .alt-kategori-link:hover {
+        background: #f3f4f6;
+        color: #111827;
+    }
+
+    .alt-kategori-link.active {
+        background: #3665f3;
+        color: #fff;
+    }
+</style>
+
 <section class="page-card p-4 mb-4">
     <div class="row align-items-center g-3">
         <div class="col-lg-6">
@@ -28,20 +101,36 @@
     <aside class="col-lg-3">
         <div class="page-card p-3">
             <h2 class="h5 mb-3">Kategoriler</h2>
-            <div class="list-group list-group-flush">
-                <a href="{% url 'products:urun_kategori_incele' %}" class="list-group-item list-group-item-action {% if not secili_kategori %}active{% endif %}">
+            <div class="kategori-listesi">
+                <a href="{% url 'products:urun_kategori_incele' %}" class="kategori-link rounded {% if not secili_kategori %}active{% endif %}">
                     Tum urunler
                 </a>
 
                 {% for kat in kategoriler %}
-                    <a href="{% url 'products:urun_kategori_incele' kat.pk %}" class="list-group-item list-group-item-action {% if secili_kategori.pk == kat.pk %}active{% endif %}">
-                        {{ kat.ad }}
-                    </a>
-                    {% for alt_kat in kat.subcategories.all %}
-                        <a href="{% url 'products:urun_kategori_incele' alt_kat.pk %}" class="list-group-item list-group-item-action ps-4 {% if secili_kategori.pk == alt_kat.pk %}active{% endif %}">
-                            {{ alt_kat.ad }}
-                        </a>
-                    {% endfor %}
+                    {% with alt_kategoriler=kat.subcategories.all %}
+                        <div class="kategori-satiri">
+                            <a href="{% url 'products:urun_kategori_incele' kat.pk %}" class="kategori-link {% if secili_kategori.pk == kat.pk %}active{% endif %}">
+                                {{ kat.ad }}
+                            </a>
+                            {% if alt_kategoriler %}
+                                <button class="kategori-toggle" type="button" data-category-toggle="kategori-{{ kat.pk }}" aria-label="{{ kat.ad }} alt kategorilerini ac/kapat">
+                                    +
+                                </button>
+                            {% endif %}
+                        </div>
+
+                        {% if alt_kategoriler %}
+                            <div class="alt-kategoriler d-none" id="kategori-{{ kat.pk }}">
+                                {% for alt_kat in alt_kategoriler %}
+                                    <a href="{% url 'products:urun_kategori_incele' alt_kat.pk %}" class="alt-kategori-link {% if secili_kategori.pk == alt_kat.pk %}active{% endif %}">
+                                        {{ alt_kat.ad }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% empty %}
+                    <div class="text-muted small">Kategori bulunamadi.</div>
                 {% endfor %}
             </div>
         </div>
@@ -62,9 +151,11 @@
                 <div class="col-md-6 col-xl-4">
                     <article class="product-card h-100 overflow-hidden">
                         {% if urun.gorsel %}
-                            <img src="{{ urun.gorsel.url }}" class="w-100" alt="{{ urun.ad }}" style="height: 210px; object-fit: cover;">
+                            <a href="{% url 'products:urun_detay' urun.pk %}" class="d-block">
+                                <img src="{{ urun.gorsel.url }}" class="w-100" alt="{{ urun.ad }}" style="height: 210px; object-fit: cover;">
+                            </a>
                         {% else %}
-                            <div class="bg-light d-grid place-items-center text-muted" style="height: 210px; display: grid; place-items: center;">Gorsel yok</div>
+                            <a href="{% url 'products:urun_detay' urun.pk %}" class="bg-light d-grid place-items-center text-muted text-decoration-none" style="height: 210px; display: grid; place-items: center;">Gorsel yok</a>
                         {% endif %}
 
                         <div class="p-3 d-flex flex-column h-100">
@@ -88,4 +179,30 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.querySelectorAll('[data-category-toggle]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const target = document.getElementById(button.dataset.categoryToggle);
+
+            if (target) {
+                target.classList.toggle('d-none');
+                button.textContent = target.classList.contains('d-none') ? '+' : '-';
+            }
+        });
+    });
+
+    document.querySelectorAll('.alt-kategori-link.active').forEach(function (link) {
+        const altKategoriKutusu = link.closest('.alt-kategoriler');
+
+        if (altKategoriKutusu) {
+            altKategoriKutusu.classList.remove('d-none');
+
+            const button = document.querySelector('[data-category-toggle="' + altKategoriKutusu.id + '"]');
+            if (button) {
+                button.textContent = '-';
+            }
+        }
+    });
+</script>
 {% endblock %}
