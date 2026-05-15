@@ -49,8 +49,8 @@
                     </div>
                     <div class="col-6">
                         <div class="border rounded p-2">
-                            <div class="text-muted small">Kalan sure</div>
-                            <strong>{% if auction and auction.is_active %}{{ auction.kalan_gun }} gun{% else %}Kapandi{% endif %}</strong>
+                            <div class="text-muted small">Bitis tarihi</div>
+                            <strong>{% if auction %}{{ auction.bitis_zamani|date:"d F Y H.i" }}{% else %}-{% endif %}</strong>
                         </div>
                     </div>
                 </div>
