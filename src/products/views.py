@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, get_object_or_404, redirect
@@ -57,11 +59,16 @@ def urun_detay(request, pk):
         urun.refresh_from_db()
     teklif_ayari = getattr(auction, 'teklif_ayari', None) if auction else None
     aktif_teklif_var = auction.teklifler.filter(durum='GECERLI').exists() if auction else False
+    minimum_teklif = None
+    if auction and auction.is_active:
+        artis_adimi = teklif_ayari.artis_adimi if teklif_ayari else Decimal('1.00')
+        minimum_teklif = auction.mevcut_fiyat + artis_adimi
     return render(request, 'products/detay.html', {
         'urun': urun,
         'auction': auction,
         'teklif_ayari': teklif_ayari,
         'aktif_teklif_var': aktif_teklif_var,
+        'minimum_teklif': minimum_teklif,
     })
 
 

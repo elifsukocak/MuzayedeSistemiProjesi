@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import RegisterForm
 from bids.models import Bid, BidStatusNotification
 from pays.services import get_wallet
@@ -69,3 +70,63 @@ def profile_view(request):
         "bildirimler": bildirimler,
         "wallet": wallet,
     })
+<<<<<<< Updated upstream
+=======
+@login_required
+def hesap_silme_kodu_gonder(request):
+    if not request.user.email:
+        messages.error(request, "E-posta adresiniz olmadığı için hesap silme kodu gönderilemedi.")
+        return redirect("profile")
+
+    code = str(random.randint(1000, 9999))
+
+    AccountDeleteCode.objects.update_or_create(
+        user=request.user,
+        defaults={"code": code}
+    )
+
+    try:
+        send_mail(
+            "BidLance Hesap Silme Kodu",
+            f"Hesabınızı pasifleştirmek için doğrulama kodunuz: {code}",
+            None,
+            [request.user.email],
+            fail_silently=False,
+        )
+        messages.success(request, "Hesap silme kodu e-posta adresinize gönderildi.")
+    except Exception:
+        messages.error(request, "Kod gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
+
+    return redirect("hesap_silme_onay")
+
+
+@login_required
+def hesap_silme_onay(request):
+    if request.method == "POST":
+        girilen_kod = request.POST.get("code")
+
+        try:
+            kayit = AccountDeleteCode.objects.get(user=request.user)
+        except AccountDeleteCode.DoesNotExist:
+            return render(request, "accounts/hesap_silme_onay.html", {
+                "error": "Önce doğrulama kodu almalısınız."
+            })
+        if kayit.is_expired():
+            kayit.delete()
+            return render(request, "accounts/hesap_silme_onay.html", {
+            "error": "Kodun süresi dolmuş. Lütfen yeniden kod alın."
+            })
+        if kayit.code == girilen_kod:
+            user = request.user
+            user.is_active = False
+            user.save()
+            kayit.delete()
+            logout(request)
+            return redirect("login")
+
+        return render(request, "accounts/hesap_silme_onay.html", {
+            "error": "Kod hatalı."
+        })
+
+    return render(request, "accounts/hesap_silme_onay.html")
+>>>>>>> Stashed changes
