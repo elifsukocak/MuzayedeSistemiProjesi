@@ -156,18 +156,32 @@
         </div>
         <div class="offcanvas-body">
             <nav class="d-grid gap-1">
-                <a class="menu-link" href="{% url 'products:urun_kategori_incele' %}">Ana sayfa <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'auction_list' %}">Muzayedeler <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'profile' %}">Profil <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'pays:odeme_paneli' %}">Odemeler <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'bids:tekliflerim' %}">Tekliflerim <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'products:urunlerimi_listele' %}">Urunlerim <span>&rsaquo;</span></a>
-                <a class="menu-link" href="{% url 'products:urun_ekle' %}">Urun ekle <span>&rsaquo;</span></a>
-                {% if user.is_authenticated and user.role == 'yonetici' or user.is_staff %}
-                    <a class="menu-link" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari <span>&rsaquo;</span></a>
-                {% endif %}
-            </nav>
+    <a class="menu-link" href="{% url 'products:urun_kategori_incele' %}">Ana sayfa <span>&rsaquo;</span></a>
+    <a class="menu-link" href="{% url 'auction_list' %}">Muzayedeler <span>&rsaquo;</span></a>
 
+    {% if user.is_authenticated %}
+        <a class="menu-link" href="{% url 'profile' %}">Profil <span>&rsaquo;</span></a>
+
+        {% if user.role == 'musteri' %}
+            <a class="menu-link" href="{% url 'bids:tekliflerim' %}">Tekliflerim <span>&rsaquo;</span></a>
+            <a class="menu-link" href="{% url 'pays:odeme_paneli' %}">Odemeler <span>&rsaquo;</span></a>
+        {% endif %}
+
+        {% if user.role == 'satici' %}
+            <a class="menu-link" href="{% url 'products:urunlerimi_listele' %}">Urunlerim <span>&rsaquo;</span></a>
+            <a class="menu-link" href="{% url 'products:urun_ekle' %}">Urun ekle <span>&rsaquo;</span></a>
+            <a class="menu-link" href="{% url 'pays:odeme_paneli' %}">Odemeler <span>&rsaquo;</span></a>
+        {% endif %}
+
+        {% if user.role == 'yonetici' or user.is_staff %}
+            <a class="menu-link" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari <span>&rsaquo;</span></a>
+        {% endif %}
+    {% else %}
+        <a class="menu-link" href="{% url 'login' %}">Giris yap <span>&rsaquo;</span></a>
+        <a class="menu-link" href="{% url 'register' %}">Kayit ol <span>&rsaquo;</span></a>
+    {% endif %}
+    </nav>
+            
             <hr>
 
             {% if user.is_authenticated %}
