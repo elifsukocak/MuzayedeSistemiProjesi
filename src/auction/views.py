@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -21,7 +23,17 @@ def auction_detail(request, id):
     auction.check_and_close()
     auction.refresh_from_db()
     teklifler = Bid.objects.filter(auction=auction).order_by('-miktar')
-    return render(request, "auction/detail.html", {"auction": auction, "teklifler": teklifler})
+    teklif_ayari = getattr(auction, 'teklif_ayari', None)
+    minimum_teklif = None
+    if auction.is_active:
+        artis_adimi = teklif_ayari.artis_adimi if teklif_ayari else Decimal('1.00')
+        minimum_teklif = auction.mevcut_fiyat + artis_adimi
+    return render(request, "auction/detail.html", {
+        "auction": auction,
+        "teklifler": teklifler,
+        "teklif_ayari": teklif_ayari,
+        "minimum_teklif": minimum_teklif,
+    })
 
 
 @login_required

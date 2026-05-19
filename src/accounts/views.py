@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import RegisterForm
 from bids.models import Bid, BidStatusNotification
 from pays.services import get_wallet
@@ -82,6 +83,9 @@ def profile_view(request):
     })
 @login_required
 def hesap_silme_kodu_gonder(request):
+    if not request.user.email:
+        messages.error(request, "E-posta adresiniz olmadığı için hesap silme kodu gönderilemedi.")
+        return redirect("profile")
     code = str(random.randint(1000, 9999))
 
     AccountDeleteCode.objects.update_or_create(
@@ -89,14 +93,18 @@ def hesap_silme_kodu_gonder(request):
         defaults={"code": code}
     )
 
-    send_mail(
-        "BidLance Hesap Silme Kodu",
-        f"Hesabınızı pasifleştirmek için doğrulama kodunuz: {code}",
-        None,
-        [request.user.email],
-        fail_silently=False,
-    )
-
+    try:
+        send_mail(
+            "BidLance Hesap Silme Kodu",
+            f"Hesabınızı pasifleştirmek için doğrulama kodunuz: {code}",
+            None,
+            [request.user.email],
+            fail_silently=False,
+        )
+        messages.success(request, "Hesap silme kodu e-posta adresinize gönderildi.")
+    except Exception:
+        messages.error(request, "Kod gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.")
+  
     return redirect("hesap_silme_onay")
 
 
@@ -129,3 +137,4 @@ def hesap_silme_onay(request):
         })
 
     return render(request, "accounts/hesap_silme_onay.html")
+

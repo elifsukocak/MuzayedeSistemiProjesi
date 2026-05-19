@@ -84,6 +84,7 @@
         {% if request.user.role == 'yonetici' or request.user.is_staff %}
             <a class="btn btn-outline-primary" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari</a>
         {% endif %}
+        <a class="btn btn-outline-danger" href="{% url 'hesap_silme_kodu_gonder' %}">Hesabı Sil</a>
         <a class="btn btn-outline-danger" href="{% url 'logout' %}">Cikis yap</a>
     </div>
 </section>
