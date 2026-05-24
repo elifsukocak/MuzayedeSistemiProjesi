@@ -33,13 +33,18 @@
                 </div>
                 <div class="col-6">
                     <div class="border rounded p-2">
-                        <div class="text-muted small">Kalan sure</div>
-                        <strong>{% if auction.is_active %}{{ auction.kalan_gun }} gun{% else %}Kapandi{% endif %}</strong>
+                        <div class="text-muted small">Bitis tarihi</div>
+                        <strong>{{ auction.bitis_zamani|date:"d F Y H.i" }}</strong>
                     </div>
                 </div>
             </div>
 
             {% if auction.is_active %}
+                <p class="text-muted small mb-3">
+                    Minimum artis: <strong>{% if teklif_ayari %}{{ teklif_ayari.artis_adimi }}{% else %}1.00{% endif %} TL</strong>
+                    <br>
+                    Bir sonraki teklif en az: <strong>{{ minimum_teklif }} TL</strong>
+                </p>
                 {% if user.is_authenticated and user == auction.product.satici %}
                     {% if teklifler %}
                     <form method="post" action="{% url 'auction_close' auction.id %}" class="d-grid gap-3">
@@ -52,7 +57,7 @@
                 {% else %}
                     <form method="post" action="{% url 'bid_view' auction.id %}" class="d-grid gap-3">
                         {% csrf_token %}
-                        <input type="number" name="miktar" class="form-control form-control-lg" min="0.01" step="0.01" placeholder="Teklif miktari" required>
+                        <input type="number" name="miktar" class="form-control form-control-lg" min="{{ minimum_teklif }}" step="0.01" placeholder="En az {{ minimum_teklif }} TL" required>
                         <button class="btn btn-bid btn-lg" type="submit">Teklif ver</button>
                     </form>
                 {% endif %}
