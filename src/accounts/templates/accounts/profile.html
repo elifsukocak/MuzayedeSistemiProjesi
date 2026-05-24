@@ -82,8 +82,9 @@
         <a class="btn btn-outline-dark" href="{% url 'products:urunlerimi_listele' %}">Urunlerim</a>
         <a class="btn btn-outline-dark" href="{% url 'products:urun_ekle' %}">Urun ekle</a>
         {% if request.user.role == 'yonetici' or request.user.is_staff %}
-            <a class="btn btn-outline-primary" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari</a>
+            <a class="btn btn-outline-primary" href="{% url 'products:yonetici_onay_listesi' %}">Yonetici onaylari</a>   
         {% endif %}
+        <a href="{% url 'hesap_silme_kodu_gonder' %}" class="btn btn-outline-danger">Hesabımı Sil</a>
         <a class="btn btn-outline-danger" href="{% url 'logout' %}">Cikis yap</a>
     </div>
 </section>

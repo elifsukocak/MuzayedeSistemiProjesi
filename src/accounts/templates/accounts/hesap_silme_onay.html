@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-card p-4">
+    <h2>Hesap Silme Onayı</h2>
+    <p>E-posta adresinize gönderilen 4 haneli kodu giriniz.</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="code" maxlength="4" class="form-control mb-3" placeholder="4 haneli kod">
+        <button type="submit" class="btn btn-danger">Hesabımı Pasifleştir</button>
+    </form>
+</div>
+{% endblock %}
