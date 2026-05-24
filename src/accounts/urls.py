@@ -13,6 +13,7 @@ urlpatterns = [
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
     path("profile/", profile_view, name="profile"),
-    path("hesap-silme/gonder/", hesap_silme_kodu_gonder, name="hesap_silme_kodu_gonder"),
-    path("hesap-silme/onay/", hesap_silme_onay, name="hesap_silme_onay"),
+
+    path("hesap-sil/kod-gonder/", hesap_silme_kodu_gonder, name="hesap_silme_kodu_gonder"),
+    path("hesap-sil/onay/", hesap_silme_onay, name="hesap_silme_onay"),
 ]

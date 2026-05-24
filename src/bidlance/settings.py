@@ -137,3 +137,5 @@ EMAIL_HOST_USER = 'bidlance.noreply@gmail.com'
 EMAIL_HOST_PASSWORD = '' # güvenlik için şifre paylaşılmamıştır
 
 DEFAULT_FROM_EMAIL = 'BidLance Müzayede Sistemi <bidlance.noreply@gmail.com>'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@bidlance.com"

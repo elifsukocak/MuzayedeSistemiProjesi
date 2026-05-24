@@ -7,7 +7,9 @@
     <div class="mb-4">
         <div class="text-muted small text-uppercase">Hesap Silme</div>
         <h1 class="h3 mb-2">Hesabını silmek istiyorsun</h1>
-        <p class="text-muted mb-0">E-posta adresine gönderilen 4 haneli kodu girerek hesabını devre dışı bırakabilirsin.</p>
+        <p class="text-muted mb-0">
+            E-posta adresine gönderilen 4 haneli kodu girerek hesabını devre dışı bırakabilirsin.
+        </p>
     </div>
 
     {% if error %}
@@ -16,15 +18,28 @@
 
     <form method="post">
         {% csrf_token %}
+
         <div class="mb-3">
             <label for="code" class="form-label">Doğrulama Kodu</label>
-            <input type="text" id="code" name="code" class="form-control" maxlength="4" required placeholder="Kodunuzu girin">
+            <input
+                type="text"
+                id="code"
+                name="code"
+                class="form-control"
+                maxlength="4"
+                required
+                placeholder="Kodunuzu girin"
+            >
         </div>
 
         <div class="d-flex flex-column flex-sm-row gap-2">
-            <button type="submit" class="btn btn-danger">Hesabı Sil</button>
-            <a class="btn btn-outline-primary" href="{% url 'hesap_silme_kodu_gonder' %}">Kodu Tekrar Gönder</a>
-            <a class="btn btn-outline-dark" href="{% url 'profile' %}">Profilime Dön</a>
+            <button type="submit" class="btn btn-danger">Hesabı Pasifleştir</button>
+            <a class="btn btn-outline-primary" href="{% url 'hesap_silme_kodu_gonder' %}">
+                Kodu Tekrar Gönder
+            </a>
+            <a class="btn btn-outline-dark" href="{% url 'profile' %}">
+                Profilime Dön
+            </a>
         </div>
     </form>
 </section>
